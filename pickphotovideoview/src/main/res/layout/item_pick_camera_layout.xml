@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_pick_camera_layout_root"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="#e2e2e2"
+    android:padding="1dp">
+    <ImageView
+        android:id="@+id/item_pick_camera_layout_IV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/pick_ic_camera"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

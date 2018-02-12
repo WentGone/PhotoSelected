@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <!-- <paths>
+        <external-path path="images" name="camera_photos" />
+    </paths>-->
+    <paths>
+        <root-path path="" name="camera_photos" />
+        <!--<external-path path="${applicationId}/" name="files_path" />-->
+    </paths>
+</resources>
+

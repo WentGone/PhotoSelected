@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="titleBar_background">#f9b344</color>
+    <color name="bg_titleback">#ffffff</color>
+    <color name="titleTextColor">#333333</color>
+    <color name="titleaction_color">#666666</color>
+    <color name="titleaction_beauty">#eabe56</color>
+
+    <color name="bg_dialog_normal">#f0ffffff</color>
+    <color name="bg_dialog_title_bar">#4cc05f</color>
+    <color name="bg_dialog_btn_normal">#33d3d3d3</color>
+    <color name="bg_dialog_btn_pressed">#d3d3d3d3</color>
+    <color name="bg_dialog_divider">#dcdcdc</color>
+    <color name="bg_dialog_btn_text">#808080</color>
+    <color name="bg_dialog_msg_text">#696969</color>
+    <color name="bg_tab_color">#fe9684</color>
+    <color name="White">#ffffff</color>
+
+    //MessageView 颜色
+    <color name="Message_Green">#e606c95d</color>
+    <color name="Message_gray">#333333</color>
+
+    //actionsheet
+    <color name="actionsheet_gray">#8F8F8F</color>
+    <color name="actionsheet_blue">#037BFF</color>
+
+    //Gray
+    <color name="Gray1">#f5f5f5</color>
+    <color name="Gray2">#eeeaea</color>
+    <color name="Gray3">#dddddd</color>
+    <color name="Gray4">#cccccc</color>
+    <color name="Gray5">#aaaaaa</color>
+    <color name="Gray6">#808080</color>
+    <color name="Gray7">#202020</color>
+    <color name="Gray8">#1c191a</color>
+    <color name="Gray">#eeeeee</color>
+    <color name="sticker_dialog_bg">#e3e6ef</color>
+    <color name="dialog_divider">#668d93a6</color>
+    <color name="blue1">#3dabff</color>
+
+    <color name="Black4">#121415</color>
+    <color name="Black5">#242125</color>
+    <color name="Black6">#313641</color>
+
+    <color name="title_bg">#fafafa</color>
+    <color name="Transparent">#00000000</color>
+    <color name="short_video_red">#ff4747</color>
+</resources>

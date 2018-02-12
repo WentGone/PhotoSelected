@@ -1,0 +1,66 @@
+package cn.mdruby.pickphotovideoview;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+
+import cn.mdruby.pickphotovideoview.activity.PickPhotoActivity;
+
+/**
+ *
+ * Created by Went_Gone on 2018/1/5.
+ */
+public class PickPhotoView {
+    private Context context;
+    private PickData pickData;
+
+    public PickPhotoView(Bulid bulid){
+        pickData = bulid.pickData;
+        context = bulid.context;
+    }
+
+    private void startPickActivity(){
+        Intent intent = new Intent(context,PickPhotoActivity.class);
+        intent.putExtra(PickPhotoActivity.PICK_DATA,pickData);
+        ((Activity)context).startActivityForResult(intent,PickConfig.RequestCode.SELECT_PHOTO);
+    }
+
+
+    public static class Bulid{
+        private PickData pickData;
+        private Context context;
+
+        public Bulid(Context context) {
+            pickData = new PickData();
+            this.context = context;
+        }
+
+        public Bulid showCamera(boolean showCamera){
+            pickData.setShowCamera(showCamera);
+            return this;
+        }
+
+        public Bulid showVideo(boolean showVideo){
+            pickData.setShowVideo(showVideo);
+            return this;
+        }
+
+        public Bulid useLocalCamera(boolean use){
+            pickData.setUseLocalCamera(use);
+            return this;
+        }
+
+        public Bulid setCount(int count){
+            pickData.setCount(count);
+            return this;
+        }
+
+        private PickPhotoView create(){
+            return new PickPhotoView(this);
+        }
+
+        public void start(){
+            create().startPickActivity();
+        }
+    }
+}
