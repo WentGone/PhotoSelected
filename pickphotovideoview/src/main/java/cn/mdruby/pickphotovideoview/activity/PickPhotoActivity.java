@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +19,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.DragEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,9 +28,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import cn.mdruby.pickphotovideoview.DirImage;
+import cn.mdruby.pickphotovideoview.GroupMedia;
 import cn.mdruby.pickphotovideoview.MediaModel;
 import cn.mdruby.pickphotovideoview.PickConfig;
 import cn.mdruby.pickphotovideoview.PickData;
@@ -65,11 +70,18 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     private int selectedCount = 3;
     private TextView mTVselected,mTVcount;
     private int isPosition = -1;
+    private GroupMedia groupImage;
+    private DirImage dirImage;
+    private List<String> dirImageStrings;
+    private HashMap<String,List<MediaModel>> groupImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_photo);
+        initDataBefor();
+
+
         pickData = (PickData) getIntent().getSerializableExtra(PICK_DATA);
         showVideo = pickData.isShowVideo();
         showCamera = pickData.isShowCamera();
@@ -88,7 +100,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.open, R.string.close);
+        mDrawerToggle = new OnDragScrollListener(this, mDrawerLayout, toolbar, R.string.open, R.string.close);
         mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
@@ -97,7 +109,14 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         mAdapter = new RVPhotoGridAdapter(this,mDatas,showCamera);
         mRV.setAdapter(mAdapter);
 
-        mListAdapter = new RVPhotoListAdapter(this);
+        groupImage = PickPreferences.getInstance(this).getListImage();
+        dirImage = PickPreferences.getInstance(this).getDirImage();
+
+        if (groupImage != null && dirImage != null){
+            groupImages = groupImage.getGroupMedias();
+            dirImageStrings = dirImage.dirName;
+        }
+        mListAdapter = new RVPhotoListAdapter(this,groupImages,dirImageStrings);
         mRVList.setAdapter(mListAdapter);
 
         mAdapter.setOnItemPhotoClickListener(this);
@@ -117,6 +136,42 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         });
 
         getPermission();
+
+        mDrawerLayout.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                return false;
+            }
+        });
+    }
+
+    private void initDataBefor() {
+        dirImageStrings = new ArrayList<>();
+        groupImages = new HashMap<>();
+    }
+
+    private class OnDragScrollListener extends ActionBarDrawerToggle{
+
+        public OnDragScrollListener(Activity activity, DrawerLayout drawerLayout, @StringRes int openDrawerContentDescRes, @StringRes int closeDrawerContentDescRes) {
+            super(activity, drawerLayout, openDrawerContentDescRes, closeDrawerContentDescRes);
+        }
+
+        public OnDragScrollListener(Activity activity, DrawerLayout drawerLayout, Toolbar toolbar, @StringRes int openDrawerContentDescRes, @StringRes int closeDrawerContentDescRes) {
+            super(activity, drawerLayout, toolbar, openDrawerContentDescRes, closeDrawerContentDescRes);
+        }
+
+        @Override
+        public void onDrawerOpened(View drawerView) {
+            if (groupImages.size()==0 && dirImageStrings.size()==0){
+                groupImage = PickPreferences.getInstance(PickPhotoActivity.this).getListImage();
+                dirImage = PickPreferences.getInstance(PickPhotoActivity.this).getDirImage();
+                groupImages.putAll(groupImage.getGroupMedias());
+                dirImageStrings.addAll(dirImage.dirName);
+                mListAdapter.notifyDataSetChanged();
+            }
+            super.onDrawerOpened(drawerView);
+        }
+
     }
 
     private void getPermission() {
