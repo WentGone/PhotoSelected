@@ -3,16 +3,18 @@
 PhotoSelected
 一个集成自定义拍照、录像、选择图片、视频的库
 ##使用方法
-在项目根build.gradle下<br/>
-```  allprojects {
+在项目根build.gradle下
+``` 
+allprojects {
 		repositories {
 			...
 			maven { url 'https://jitpack.io' }
 		}
 	}
- ```<br/>
+ ```
 然后在项目中进行依赖<br/>
-``` dependencies {
+``` 
+dependencies {
 		compile 'com.github.WentGone:PhotoSelected:1.0'
 	}
 ```
