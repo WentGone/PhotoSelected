@@ -49,6 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cn.mdruby.pickphotovideoview.R;
 import cn.mdruby.pickphotovideoview.camera.AppConfig;
@@ -139,7 +140,11 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                         long nowTime = System.currentTimeMillis();
                         long distanceTime = nowTime-startTime;
                         SimpleDateFormat format = new SimpleDateFormat("mm:ss");
-                        Log.e(TAG, "handleMessage: "+format);
+                        String converted = String.format("%02d:%02d",
+                                TimeUnit.MILLISECONDS.toMinutes(nowTime),
+                                TimeUnit.MILLISECONDS.toSeconds(startTime) -
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(nowTime))
+                        );
                         mTVTime.setText(format.format(new Date(distanceTime)));
                         mHandler.sendEmptyMessageDelayed(AppConstant.WHAT.START_VIDEO,1000);
                     }
@@ -386,6 +391,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 @Override
                 public void onInfo(MediaRecorder mr, int what, int extra) {
                     //录制完成
+                    Log.e(TAG, "onInfo: " );
                     mHandler.sendEmptyMessage(AppConstant.WHAT.STOP_VIDEO);
                 }
             });
@@ -394,6 +400,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
             mediaRecorder.prepare();
             mediaRecorder.start();
             videoStarted = true;
+            isStartVideo = true;
             mHandler.sendEmptyMessage(AppConstant.WHAT.START_VIDEO);
         } catch (Exception e) {
             videoStarted = false;
@@ -587,6 +594,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
 
             Camera.Size pictrueSize = CameraUtil.getInstance().getPropPictureSize(parameters.getSupportedPictureSizes(), video_width);
             parameters.setPictureSize(pictrueSize.width, pictrueSize.height);
+//            parameters.setPictureSize(previewSize.width, previewSize.height);
 
             camera.setParameters(parameters);
 
