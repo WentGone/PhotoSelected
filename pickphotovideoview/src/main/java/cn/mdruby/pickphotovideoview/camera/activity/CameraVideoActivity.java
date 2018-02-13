@@ -20,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -28,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -43,7 +45,9 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cn.mdruby.pickphotovideoview.R;
@@ -55,6 +59,7 @@ import cn.mdruby.pickphotovideoview.camera.CameraUtil;
 import cn.mdruby.pickphotovideoview.camera.SystemUtils;
 
 public class CameraVideoActivity extends AppCompatActivity implements SurfaceHolder.Callback{
+    private static final String TAG = "CameraVideoActivity";
     private boolean safeToTakePicture = false;
     private static final int CAMERA_REQUEST_CODE = 0X787;
     private MagicIndicator mMagicIndicator;
@@ -101,6 +106,8 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
     private File file2;
     private int recorderRotation;
     private MediaRecorder mediaRecorder;
+    private TextView mTVTime;
+    private boolean isStartVideo = false;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -124,7 +131,22 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 case AppConstant.WHAT.ERROR:
                     is_camera_delay = false;
                     break;
-
+                case AppConstant.WHAT.START_VIDEO:
+                    if (isStartVideo){
+                        if (mTVTime.getVisibility() == View.GONE){
+                            mTVTime.setVisibility(View.VISIBLE);
+                        }
+                        long nowTime = System.currentTimeMillis();
+                        long distanceTime = nowTime-startTime;
+                        SimpleDateFormat format = new SimpleDateFormat("mm:ss");
+                        Log.e(TAG, "handleMessage: "+format);
+                        mTVTime.setText(format.format(new Date(distanceTime)));
+                        mHandler.sendEmptyMessageDelayed(AppConstant.WHAT.START_VIDEO,1000);
+                    }
+                    break;
+                case AppConstant.WHAT.STOP_VIDEO:
+                    isStartVideo = false;
+                    break;
             }
         }
     };
@@ -138,6 +160,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
         surfaceView = (SurfaceView) findViewById(R.id.act_camera_video_SurfaceView);
         mIVStart = (ImageView) findViewById(R.id.act_camera_video_IV_start);
         mIVShowPhoto = (ImageView) findViewById(R.id.act_camera_video_IV_showPhoto);
+        mTVTime = (TextView) findViewById(R.id.act_camera_video_TV_time);
         mHolder = surfaceView.getHolder();
         initData();
         requestPermission();
@@ -180,9 +203,11 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                         float x = motionEvent.getX();
                         if (x-startX<-40){
                             isVideo = true;
+                            mTVTime.setVisibility(View.VISIBLE);
                             mMagicIndicator.onPageSelected(1);
                         }
                         if (x-startX>40){
+                            mTVTime.setVisibility(View.GONE);
                             isVideo = false;
                             mMagicIndicator.onPageSelected(0);
                         }
@@ -263,9 +288,10 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
         releaseCamera();
         super.finish();
     }
-
+    private long startTime = 0;
     protected void startVideo() {
         try {
+            startTime = System.currentTimeMillis();
             pathName = System.currentTimeMillis() + "";
             //视频存储路径
             file = new File(Environment.getExternalStorageDirectory() + File.separator + pathName + AppConfig.MP4);
@@ -346,6 +372,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 @Override
                 public void onError(MediaRecorder mr, int what, int extra) {
                     Toast.makeText(context, "错误", Toast.LENGTH_SHORT).show();
+                    mHandler.sendEmptyMessage(AppConstant.WHAT.STOP_VIDEO);
                     // 发生错误，停止录制
                     if (mediaRecorder != null) {
                         mediaRecorder.stop();
@@ -359,6 +386,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 @Override
                 public void onInfo(MediaRecorder mr, int what, int extra) {
                     //录制完成
+                    mHandler.sendEmptyMessage(AppConstant.WHAT.STOP_VIDEO);
                 }
             });
 
@@ -366,6 +394,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
             mediaRecorder.prepare();
             mediaRecorder.start();
             videoStarted = true;
+            mHandler.sendEmptyMessage(AppConstant.WHAT.START_VIDEO);
         } catch (Exception e) {
             videoStarted = false;
             e.printStackTrace();
@@ -473,6 +502,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 intent.putExtra(AppConstant.KEY.PIC_HEIGHT, picHeight);
                 setResult(RESULT_OK,intent);
                 safeToTakePicture = true;
+                isStartVideo = true;
                 CameraVideoActivity.this.finish();
 //                Toast.makeText(context, "=="+img_path, Toast.LENGTH_SHORT).show();
                 /*RequestOptions options = new RequestOptions();
@@ -514,7 +544,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
 
         picHeight = (screenWidth * pictrueSize.width) / pictrueSize.height;
 
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(screenWidth, (screenWidth * pictrueSize.width) / pictrueSize.height);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(screenWidth, (screenWidth * pictrueSize.width) / pictrueSize.height);
         //这里当然可以设置拍照位置 比如居中 我这里就置顶了
         //params.gravity = Gravity.CENTER;
         surfaceView.setLayoutParams(params);
@@ -566,7 +596,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
              * previewSize.width才是surfaceView的高度
              * 一般相机都是屏幕的宽度 这里设置为屏幕宽度 高度自适应 你也可以设置自己想要的大小
              */
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(screenWidth, (screenWidth * video_width) / video_height);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(screenWidth, (screenWidth * video_width) / video_height);
             //这里当然可以设置拍照位置 比如居中 我这里就置顶了
             surfaceView.setLayoutParams(params);
         }
@@ -632,6 +662,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                     public void onClick(View v) {
                         isVideo = index != 0;
                         mMagicIndicator.onPageSelected(index);
+                        mTVTime.setVisibility(index == 0?View.GONE:View.VISIBLE);
                     }
                 });
                 return simplePagerTitleView;

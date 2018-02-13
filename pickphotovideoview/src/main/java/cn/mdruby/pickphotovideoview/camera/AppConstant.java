@@ -7,6 +7,8 @@ public class AppConstant {
         int SUCCESS = 0;
         int FAILURE = 1;
         int ERROR = 2;
+        int START_VIDEO = 3;
+        int STOP_VIDEO = 4;
     }
 
     public interface KEY{
