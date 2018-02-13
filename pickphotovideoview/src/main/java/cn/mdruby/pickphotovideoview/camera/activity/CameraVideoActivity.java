@@ -55,6 +55,7 @@ import cn.mdruby.pickphotovideoview.camera.CameraUtil;
 import cn.mdruby.pickphotovideoview.camera.SystemUtils;
 
 public class CameraVideoActivity extends AppCompatActivity implements SurfaceHolder.Callback{
+    private boolean safeToTakePicture = false;
     private static final int CAMERA_REQUEST_CODE = 0X787;
     private MagicIndicator mMagicIndicator;
     private ImageView mIVStart;
@@ -129,7 +130,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_video);
         context = this;
@@ -152,7 +153,10 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                             startPreview(mCamera, mHolder);
                         }
                     }
-                    captrue();
+                    if (safeToTakePicture){
+                        captrue();
+                        safeToTakePicture = false;
+                    }
                 }else {
                     if (!videoStarted){
                         recorderRotation = CameraUtil.getInstance().getRecorderRotation(mCameraId);
@@ -165,35 +169,35 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
             }
         });
 
-      surfaceView.setOnTouchListener(new View.OnTouchListener() {
-          @Override
-          public boolean onTouch(View view, MotionEvent motionEvent) {
-              switch (motionEvent.getAction()){
-                  case MotionEvent.ACTION_DOWN:
-                      startX = motionEvent.getX();
-                      break;
-                  case MotionEvent.ACTION_MOVE:
-                      float x = motionEvent.getX();
-                      if (x-startX<-40){
-                          isVideo = true;
-                          mMagicIndicator.onPageSelected(1);
-                      }
-                      if (x-startX>40){
-                          isVideo = false;
-                          mMagicIndicator.onPageSelected(0);
-                      }
-                      break;
-              }
-              return true;
-          }
-      });
+        surfaceView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        startX = motionEvent.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float x = motionEvent.getX();
+                        if (x-startX<-40){
+                            isVideo = true;
+                            mMagicIndicator.onPageSelected(1);
+                        }
+                        if (x-startX>40){
+                            isVideo = false;
+                            mMagicIndicator.onPageSelected(0);
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     private void requestPermission() {
         //判断是否开启摄像头权限
         if ((ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
-        &&(ContextCompat.checkSelfPermission(this,
+                &&(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)) {
             StartListener();
 
@@ -246,6 +250,18 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 }
             }
         },500);
+    }
+
+    @Override
+    public void onBackPressed() {
+        releaseCamera();
+        super.onBackPressed();
+    }
+
+    @Override
+    public void finish() {
+        releaseCamera();
+        super.finish();
     }
 
     protected void startVideo() {
@@ -307,7 +323,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
             }
 
             //视频尺寸
-            mediaRecorder.setVideoSize(video_width, video_height);
+//            mediaRecorder.setVideoSize(video_width, video_height);
 
 
             //数值越大 视频质量越高
@@ -317,7 +333,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
             mediaRecorder.setVideoEncodingBitRate(4 * 720 * 720);
 
             // 设置视频的采样率，每秒帧数
-            mediaRecorder.setVideoFrameRate(5);
+//            mediaRecorder.setVideoFrameRate(5);
 
             // 设置录制视频文件的输出路径
             mediaRecorder.setOutputFile(file.getAbsolutePath());
@@ -409,6 +425,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
             camera.setDisplayOrientation(90);
             camera.startPreview();
             isview = true;
+            safeToTakePicture = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -455,6 +472,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 intent.putExtra(AppConstant.KEY.PIC_WIDTH, screenWidth);
                 intent.putExtra(AppConstant.KEY.PIC_HEIGHT, picHeight);
                 setResult(RESULT_OK,intent);
+                safeToTakePicture = true;
                 CameraVideoActivity.this.finish();
 //                Toast.makeText(context, "=="+img_path, Toast.LENGTH_SHORT).show();
                 /*RequestOptions options = new RequestOptions();
@@ -627,3 +645,4 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
         mMagicIndicator.setNavigator(commonNavigator);
     }
 }
+
