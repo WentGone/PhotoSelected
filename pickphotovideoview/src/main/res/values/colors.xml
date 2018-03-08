@@ -45,4 +45,5 @@
     <color name="title_bg">#fafafa</color>
     <color name="Transparent">#00000000</color>
     <color name="short_video_red">#ff4747</color>
+    <color name="grey_666">#666666</color>
 </resources>

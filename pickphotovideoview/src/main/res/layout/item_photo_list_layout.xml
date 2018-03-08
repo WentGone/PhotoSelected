@@ -2,16 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_photo_list_layout_Root"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/padding_left_right"
+    android:paddingRight="@dimen/padding_left_right">
     <ImageView
         android:id="@+id/item_photo_list_layout_IV"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:scaleType="centerCrop"/>
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="centerCrop"
+        android:layout_marginRight="@dimen/padding_left_right"
+        android:background="@drawable/image_list_stroke"
+        android:padding="@dimen/stroke_width"/>
     <TextView
         android:id="@+id/item_photo_list_layout_TV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="你好"/>
+        android:text="你好"
+        android:textSize="@dimen/textSize22px"/>
 </LinearLayout>

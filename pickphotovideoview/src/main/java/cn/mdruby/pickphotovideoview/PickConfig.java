@@ -22,7 +22,8 @@ public class PickConfig {
     // intent img select list
     public static final String INTENT_IMG_LIST_SELECT = "intent_img_list_select";
     // all photos
-    public static final String ALL_PHOTOS = "All Photos";
+//    public static final String ALL_PHOTOS = App.getContext().getString(R.string.pick_all_photo);
+    public static final String ALL_PHOTOS = "所有图片";
     // Camera type
     public static final int CAMERA_TYPE = -1;
     // space

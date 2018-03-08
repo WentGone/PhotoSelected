@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import cn.mdruby.pickphotovideoview.App;
 import cn.mdruby.pickphotovideoview.DirImage;
 import cn.mdruby.pickphotovideoview.GroupMedia;
 import cn.mdruby.pickphotovideoview.MediaModel;
@@ -47,6 +49,7 @@ import cn.mdruby.pickphotovideoview.adapter.RVPhotoGridAdapter;
 import cn.mdruby.pickphotovideoview.adapter.RVPhotoListAdapter;
 import cn.mdruby.pickphotovideoview.camera.AppConstant;
 import cn.mdruby.pickphotovideoview.camera.activity.CameraVideoActivity;
+import cn.mdruby.pickphotovideoview.ui.DividerItemDecoration;
 import cn.mdruby.pickphotovideoview.util.PickUtils;
 
 public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoClickListener{
@@ -117,6 +120,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
             dirImageStrings = dirImage.dirName;
         }
         mListAdapter = new RVPhotoListAdapter(this,groupImages,dirImageStrings);
+        mRVList.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.HORIZONTAL_LIST,15, Color.TRANSPARENT));
         mRVList.setAdapter(mListAdapter);
 
         mAdapter.setOnItemPhotoClickListener(this);
@@ -229,10 +233,13 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         mDatas.clear();
         mDatas.addAll(item);
         mDrawerLayout.closeDrawers();
+        mAdapter.setShowCamera(mListAdapter.getDirName(position).equals(PickConfig.ALL_PHOTOS)?showCamera:false);
         mAdapter.notifyDataSetChanged();
     }
 
-    public static final String ALL_PHOTOS = "All Photos";
+//    public static final String ALL_PHOTOS = "All Photos";
+    public static final String ALL_PHOTOS = "所有图片";
+//    public static final String ALL_PHOTOS = App.getContext().getString(R.string.pick_all_photo);
 
     /**
      * 获取所有的照片

@@ -162,7 +162,8 @@ public class RVPhotoGridAdapter extends RecyclerView.Adapter {
 
         private void bindView(final int position){
             MediaModel bean = mDatas.get(showCamera ? position - 1 : position);
-            Glide.with(context).load(bean.getThumPath()).into(mIV);
+//            Glide.with(context).load(bean.getThumPath()).into(mIV);
+            Glide.with(context).load(bean.getPath()).into(mIV);
             mIV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -188,5 +189,9 @@ public class RVPhotoGridAdapter extends RecyclerView.Adapter {
 
     public void setOnItemPhotoClickListener(OnItemPhotoClickListener onItemPhotoClickListener) {
         this.onItemPhotoClickListener = onItemPhotoClickListener;
+    }
+
+    public void setShowCamera(boolean showCamera) {
+        this.showCamera = showCamera;
     }
 }

@@ -159,6 +159,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_camera_video);
         context = this;
         mMagicIndicator = (MagicIndicator) findViewById(R.id.act_camera_video_MagicIndicator);

@@ -3,6 +3,7 @@ package cn.mdruby.pickphotovideoview.adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +30,7 @@ import cn.mdruby.pickphotovideoview.abstracts.OnRVListClickListener;
  */
 
 public class RVPhotoListAdapter extends RecyclerView.Adapter {
+    private static final String TAG = "RVPhotoListAdapter";
     private Context context;
     private List<String> dirImageStrings;
     private HashMap<String,List<MediaModel>> groupImages;
@@ -106,8 +109,12 @@ public class RVPhotoListAdapter extends RecyclerView.Adapter {
 //            ArrayList<String> paths = groupImage.mGroupMap.get(dirName);
 //            List<MediaModel> paths = groupImage.getGroupMedias().get(dirName);
             List<MediaModel> paths = groupImages.get(dirName);
+//            dirName+="你还测试的一个文本，我没有任何的意义的啊";
             mTV.setText(dirName+" "+String.format(context.getString(R.string.pick_photo_size),paths.size() + ""));
-            Glide.with(context).load(Uri.parse("file://" + paths.get(0).getThumPath())).into(mIV);
+            RequestOptions options = new RequestOptions();
+            options.error(R.mipmap.btn_camera_close);
+//            Glide.with(context).load(Uri.parse("file://" + paths.get(0).getThumPath())).apply(options).into(mIV);
+            Glide.with(context).load(Uri.parse("file://" + paths.get(0).getPath())).apply(options).into(mIV);
 //            itemView.setTag(R.id.pick_dir_name,dirName);
             mViewRoot.setOnClickListener(new View.OnClickListener() {
                 @Override
