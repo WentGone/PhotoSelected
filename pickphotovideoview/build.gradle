@@ -40,4 +40,5 @@ dependencies {
     compile 'com.ycjiang:VideoPlayModule:1.9.93'
     compile 'com.github.chrisbanes:PhotoView:1.2.6'
     compile 'com.github.hackware1993:MagicIndicator:1.5.0'
+    compile 'cn.jzvd:jiaozivideoplayer:6.2.8'
 }
