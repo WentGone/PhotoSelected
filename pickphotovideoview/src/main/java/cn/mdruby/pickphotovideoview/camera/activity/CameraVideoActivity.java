@@ -530,7 +530,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
     private void setupCamera(Camera camera) {
         if (camera == null){
             camera = getCamera(mCameraId);
-            Toast.makeText(context, "camera is null", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "camera is null", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "setupCamera: camera is null" );
         }
         if (camera != null){
@@ -625,7 +625,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
      * 释放相机资源
      */
     private void releaseCamera() {
-        Toast.makeText(context, "release="+(mCamera != null), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "release="+(mCamera != null), Toast.LENGTH_SHORT).show();
         if (mCamera != null) {
             mCamera.setPreviewCallback(null);
             mCamera.stopPreview();
