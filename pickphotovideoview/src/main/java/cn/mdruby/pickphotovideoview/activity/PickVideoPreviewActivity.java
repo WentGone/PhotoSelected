@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import chuangyuan.ycj.videolibrary.video.ManualPlayer;
+import cn.jzvd.JZVideoPlayerStandard;
 import cn.mdruby.pickphotovideoview.MediaModel;
 import cn.mdruby.pickphotovideoview.OfficeDataSource;
 import cn.mdruby.pickphotovideoview.R;
@@ -32,7 +33,12 @@ public class PickVideoPreviewActivity extends AppCompatActivity {
 //        player.play(proxyUrl);
         ManualPlayer exoPlayerManager = new ManualPlayer(this,R.id.exo_play_context_id,new OfficeDataSource(this, null));
         exoPlayerManager.setPlayUri(mediaModel.getFile().getAbsolutePath());
-        exoPlayerManager.startPlayer();
+//        exoPlayerManager.startPlayer();
+
+        String path = mediaModel.getFile().getAbsolutePath();
+        JZVideoPlayerStandard jzVideoPlayerStandard = (JZVideoPlayerStandard) findViewById(R.id.videoplayer);
+        jzVideoPlayerStandard.setUp(path
+                , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "");
     }
 
 }

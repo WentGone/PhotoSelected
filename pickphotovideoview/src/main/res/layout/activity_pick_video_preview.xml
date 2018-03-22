@@ -31,5 +31,10 @@
         android:id="@+id/exo_play_context_id"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent" />
+        android:background="@android:color/transparent"
+        android:visibility="gone"/>
+    <cn.jzvd.JZVideoPlayerStandard
+        android:id="@+id/videoplayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>

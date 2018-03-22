@@ -526,6 +526,9 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
      * 设置
      */
     private void setupCamera(Camera camera) {
+        if (camera == null){
+            camera = getCamera(mCameraId);
+        }
         Camera.Parameters parameters = camera.getParameters();
 
         if (parameters.getSupportedFocusModes().contains(
@@ -621,7 +624,6 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
             mCamera.release();
             mCamera = null;
         }
-
     }
 
     @Override
