@@ -21,6 +21,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/camera"
         android:text="camera"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/otherApp"
+        android:text="otherApp"/>
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"

@@ -27,6 +27,7 @@ public class RVPhotoGridAdapter extends RecyclerView.Adapter {
     private static final int CAMERA_VIEW_TYPE = 1;
     private static final int PHOTO_VIEW_TYPE = 2;
     private static final int VIDEO_VIEW_TYPE = 3;
+    private boolean showCheckIcon;
 
     public RVPhotoGridAdapter(Context context, List<MediaModel> mDatas, boolean showCamera) {
         this.context = context;
@@ -134,16 +135,20 @@ public class RVPhotoGridAdapter extends RecyclerView.Adapter {
                     }
                 }
             });
-            mIVselected.setImageResource(bean.isSelected()?R.mipmap.pick_ic_select:R.mipmap.pick_ic_un_select);
 
-            mIVselected.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (onItemPhotoClickListener != null){
-                        onItemPhotoClickListener.onSelectClick(showCamera?position - 1 : position);
+            mIVselected.setVisibility(showCheckIcon?View.VISIBLE:View.GONE);
+            if (showCheckIcon){
+                mIVselected.setImageResource(bean.isSelected()?R.mipmap.pick_ic_select:R.mipmap.pick_ic_un_select);
+                mIVselected.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (onItemPhotoClickListener != null){
+                            onItemPhotoClickListener.onSelectClick(showCamera?position - 1 : position);
+                        }
                     }
-                }
-            });
+                });
+            }
+
         }
     }
     private class RVVideoGridViewHolder extends RecyclerView.ViewHolder{
@@ -173,15 +178,19 @@ public class RVPhotoGridAdapter extends RecyclerView.Adapter {
                 }
             });
             mtv.setText(bean.getDurationStr());
-            mIVselected.setImageResource(bean.isSelected()?R.mipmap.pick_ic_select:R.mipmap.pick_ic_un_select);
-            mIVselected.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (onItemPhotoClickListener != null){
-                        onItemPhotoClickListener.onSelectClick(showCamera ? position - 1 : position);
+
+            mIVselected.setVisibility(showCheckIcon?View.VISIBLE:View.GONE);
+            if (showCheckIcon){
+                mIVselected.setImageResource(bean.isSelected()?R.mipmap.pick_ic_select:R.mipmap.pick_ic_un_select);
+                mIVselected.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (onItemPhotoClickListener != null){
+                            onItemPhotoClickListener.onSelectClick(showCamera ? position - 1 : position);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -193,5 +202,9 @@ public class RVPhotoGridAdapter extends RecyclerView.Adapter {
 
     public void setShowCamera(boolean showCamera) {
         this.showCamera = showCamera;
+    }
+
+    public void setShowCheckIcon(boolean showCheckIcon) {
+        this.showCheckIcon = showCheckIcon;
     }
 }

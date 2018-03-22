@@ -21,7 +21,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.DragEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,11 +75,14 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     private boolean useLocalCamera = false;
     private int selectedCount = 3;
     private TextView mTVselected,mTVcount;
-    private int isPosition = -1;
     private GroupMedia groupImage;
     private DirImage dirImage;
     private List<String> dirImageStrings;
     private HashMap<String,List<MediaModel>> groupImages;
+    private LinearLayout mLLayoutContent;
+    private int bottomBarViewRes = 0;
+    private boolean showCheckedIcon = true;
+    private boolean showBottomBar = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +90,15 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         setContentView(R.layout.activity_pick_photo);
         initDataBefor();
 
-
         pickData = (PickData) getIntent().getSerializableExtra(PICK_DATA);
         showVideo = pickData.isShowVideo();
         showCamera = pickData.isShowCamera();
         selectedCount = pickData.isCount();
         useLocalCamera = pickData.isUseLocalCamera();
+        bottomBarViewRes = pickData.getBottomBarViewRes();
+        showCheckedIcon = pickData.isShowChecked();
+        showBottomBar = pickData.isShowBottomBar();
+
         mDatas = new ArrayList<>();
         mSelecteds = new ArrayList<>();
         mRV = (RecyclerView) findViewById(R.id.act_pick_photo_RV);
@@ -97,8 +106,9 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         mDrawerLayout = (DrawerLayout) findViewById(R.id.act_pick_DrawerLayout);
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         mTVtitle = (TextView) findViewById(R.id.act_pick_TV_title);
-        mTVselected = (TextView) findViewById(R.id.act_pick_TV_bottom_selected);
-        mTVcount = (TextView) findViewById(R.id.act_pick_TV_bottom_count);
+        mLLayoutContent = (LinearLayout) findViewById(R.id.act_pick_photo_LLayout_Content);
+
+        initBottomBar();
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -110,6 +120,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         mRV.setLayoutManager(new GridLayoutManager(this,4,GridLayoutManager.VERTICAL,false));
         mRVList.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new RVPhotoGridAdapter(this,mDatas,showCamera);
+        mAdapter.setShowCheckIcon(showCheckedIcon);
         mRV.setAdapter(mAdapter);
 
         groupImage = PickPreferences.getInstance(this).getListImage();
@@ -147,6 +158,21 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                 return false;
             }
         });
+    }
+
+    private void initBottomBar() {
+        int childCount = mLLayoutContent.getChildCount();
+        /*if (){
+            View view = View.inflate(this,bottomBarViewRes,null);
+
+        }else {
+        }*/
+        View view = LayoutInflater.from(this).inflate((childCount<2 && bottomBarViewRes>0)?bottomBarViewRes:R.layout.pick_photo_bottom_bar,mLLayoutContent,false);
+        if (showBottomBar){
+            mLLayoutContent.addView(view);
+        }
+        mTVselected = (TextView) view.findViewById(R.id.act_pick_TV_bottom_selected);
+        mTVcount = (TextView) view.findViewById(R.id.act_pick_TV_bottom_count);
     }
 
     private void initDataBefor() {
@@ -303,7 +329,6 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     public void onPhotoClick(int position) {
         Intent intent = new Intent(this,PickPhotoPreviewActivity.class);
         MediaModel mediaModel = mDatas.get(position);
-        isPosition = position;
         if (mDatas.size()>=photoSize){
             int startPos = (position-photoSize/2)<0?0:(position-photoSize/2);
             int endPos = ((mDatas.size()-position)>=photoSize)?(position+photoSize/2):mDatas.size();
@@ -339,6 +364,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         }
         intent.putExtra(PickConfig.KEY.MEDIA_COUNT,selectedCount);
         intent.putExtra(PickConfig.KEY.MEDIA_NOW_COUNT,mSelecteds.size());
+        intent.putExtra(PickConfig.KEY.PICK_DATA_INTENT,pickData);
         startActivityForResult(intent,PickConfig.RequestCode.PRE_PHOTO_CODE);
     }
 

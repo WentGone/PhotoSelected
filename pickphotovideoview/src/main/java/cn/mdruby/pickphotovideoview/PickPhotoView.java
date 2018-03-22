@@ -55,6 +55,22 @@ public class PickPhotoView {
             return this;
         }
 
+        public Bulid setBottomBarViewRes(int viewLayoutRes){
+            pickData.setBottomBarViewRes(viewLayoutRes);
+            return this;
+        }
+
+
+        public Bulid showBottomBar(boolean show){
+            pickData.setShowBottomBar(show);
+            return this;
+        }
+
+        public Bulid showCheckedIcon(boolean show){
+            pickData.setShowChecked(show);
+            return this;
+        }
+
         private PickPhotoView create(){
             return new PickPhotoView(this);
         }

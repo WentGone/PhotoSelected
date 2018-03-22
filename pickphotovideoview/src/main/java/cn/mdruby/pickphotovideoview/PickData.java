@@ -11,6 +11,9 @@ public class PickData implements Serializable{
     private boolean showVideo;
     private boolean useLocalCamera = false;
     private int count;
+    private int bottomBarViewRes;
+    private boolean showChecked;
+    private boolean showBottomBar = true;
 
     public boolean isShowCamera() {
         return showCamera;
@@ -42,5 +45,29 @@ public class PickData implements Serializable{
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public int getBottomBarViewRes() {
+        return bottomBarViewRes;
+    }
+
+    public void setBottomBarViewRes(int bottomBarViewRes) {
+        this.bottomBarViewRes = bottomBarViewRes;
+    }
+
+    public boolean isShowChecked() {
+        return showChecked;
+    }
+
+    public void setShowChecked(boolean showChecked) {
+        this.showChecked = showChecked;
+    }
+
+    public boolean isShowBottomBar() {
+        return showBottomBar;
+    }
+
+    public void setShowBottomBar(boolean showBottomBar) {
+        this.showBottomBar = showBottomBar;
     }
 }

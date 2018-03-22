@@ -31,6 +31,7 @@ import java.util.List;
 
 import cn.mdruby.pickphotovideoview.MediaModel;
 import cn.mdruby.pickphotovideoview.PickConfig;
+import cn.mdruby.pickphotovideoview.PickData;
 import cn.mdruby.pickphotovideoview.PickPhotoView;
 import cn.mdruby.pickphotovideoview.R;
 import cn.mdruby.pickphotovideoview.ui.SlideViewPager;
@@ -47,6 +48,8 @@ public class PickPhotoPreviewActivity extends AppCompatActivity{
     private static ImageView mIVselected;
     private int count;
     private int nowCount;
+    private boolean showCheckedIcon;
+    private PickData pickData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,8 @@ public class PickPhotoPreviewActivity extends AppCompatActivity{
         position = getIntent().getIntExtra(POSITION_COUNT,0);
         count = getIntent().getIntExtra(PickConfig.KEY.MEDIA_COUNT,0);
         nowCount = getIntent().getIntExtra(PickConfig.KEY.MEDIA_NOW_COUNT,0);
+        pickData = (PickData) getIntent().getSerializableExtra(PickConfig.KEY.PICK_DATA_INTENT);
+        showCheckedIcon = pickData.isShowChecked();
 
         mIVselected = (ImageView) findViewById(R.id.act_pick_photo_preview_IV_selected);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -69,7 +74,10 @@ public class PickPhotoPreviewActivity extends AppCompatActivity{
         mViewPager = (SlideViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(position);
-        mIVselected.setImageResource(mediaModels.get(position).isSelected()?R.mipmap.pick_ic_select:R.mipmap.pick_ic_un_select);
+        mIVselected.setVisibility(showCheckedIcon?View.VISIBLE:View.GONE);
+        if (showCheckedIcon){
+            mIVselected.setImageResource(mediaModels.get(position).isSelected()?R.mipmap.pick_ic_select:R.mipmap.pick_ic_un_select);
+        }
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -79,7 +87,9 @@ public class PickPhotoPreviewActivity extends AppCompatActivity{
             @Override
             public void onPageSelected(int position) {
                 MediaModel mediaModel = mediaModels.get(position);
-                mIVselected.setImageResource(mediaModel.isSelected()?R.mipmap.pick_ic_select:R.mipmap.pick_ic_un_select);
+                if (showCheckedIcon){
+                    mIVselected.setImageResource(mediaModel.isSelected()?R.mipmap.pick_ic_select:R.mipmap.pick_ic_un_select);
+                }
             }
 
             @Override
@@ -101,7 +111,9 @@ public class PickPhotoPreviewActivity extends AppCompatActivity{
                     if (mediaModels.get(currentItem).isSelected()){
                         nowCount+=1;
                     }
-                    mIVselected.setImageResource(mediaModels.get(currentItem).isSelected()?R.mipmap.pick_ic_select:R.mipmap.pick_ic_un_select);
+                    if (showCheckedIcon){
+                        mIVselected.setImageResource(mediaModels.get(currentItem).isSelected()?R.mipmap.pick_ic_select:R.mipmap.pick_ic_un_select);
+                    }
                 }else {
                     Toast.makeText(PickPhotoPreviewActivity.this, "选择的图片已达"+count+"张", Toast.LENGTH_SHORT).show();
                 }

@@ -75,5 +75,6 @@ public class PickConfig {
         public static final String PRE_PHOTO_FILE = "PRE_photo_file";
         public static final String MEDIA_COUNT = "media_count";
         public static final String MEDIA_NOW_COUNT = "media_now_count";
+        public static final String PICK_DATA_INTENT = "pick_data_intent";
     }
 }
