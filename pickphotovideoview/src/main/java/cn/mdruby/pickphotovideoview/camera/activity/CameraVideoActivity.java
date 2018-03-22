@@ -414,8 +414,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
             mediaRecorder.stop();
             mediaRecorder.release();
             mediaRecorder = null;
-            releaseCamera();
-            StartListener();
+//            StartListener();
         }
         RequestOptions options = new RequestOptions();
         options.transform(new CircleCrop());
@@ -427,6 +426,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
         intent.putExtra(AppConstant.KEY.PIC_WIDTH, screenWidth);
         intent.putExtra(AppConstant.KEY.PIC_HEIGHT, picHeight);
         setResult(RESULT_OK,intent);
+//        releaseCamera();
         CameraVideoActivity.this.finish();
     }
 
@@ -456,11 +456,13 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 recorderRotation = CameraUtil.getInstance().getRecorderRotation(mCameraId);
                 setupCameraVideo(camera);
             }
-            camera.setPreviewDisplay(holder);
-            //亲测的一个方法 基本覆盖所有手机 将预览矫正
-            CameraUtil.getInstance().setCameraDisplayOrientation((Activity) context, mCameraId, camera);
-            camera.setDisplayOrientation(90);
-            camera.startPreview();
+            if (camera != null){
+                camera.setPreviewDisplay(holder);
+                //亲测的一个方法 基本覆盖所有手机 将预览矫正
+                CameraUtil.getInstance().setCameraDisplayOrientation((Activity) context, mCameraId, camera);
+                camera.setDisplayOrientation(90);
+                camera.startPreview();
+            }
             isview = true;
             safeToTakePicture = true;
         } catch (IOException e) {
@@ -528,37 +530,42 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
     private void setupCamera(Camera camera) {
         if (camera == null){
             camera = getCamera(mCameraId);
+            Toast.makeText(context, "camera is null", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "setupCamera: camera is null" );
         }
-        Camera.Parameters parameters = camera.getParameters();
+        if (camera != null){
+            Camera.Parameters parameters = camera.getParameters();
 
-        if (parameters.getSupportedFocusModes().contains(
-                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            if (parameters.getSupportedFocusModes().contains(
+                    Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            }
+
+            //这里第三个参数为最小尺寸 getPropPreviewSize方法会对从最小尺寸开始升序排列 取出所有支持尺寸的最小尺寸
+            Camera.Size previewSize = CameraUtil.getInstance().getPropSizeForHeight(parameters.getSupportedPreviewSizes(), 800);
+            parameters.setPreviewSize(previewSize.width, previewSize.height);
+
+            Camera.Size pictrueSize = CameraUtil.getInstance().getPropSizeForHeight(parameters.getSupportedPictureSizes(), 800);
+            parameters.setPictureSize(pictrueSize.width, pictrueSize.height);
+
+            camera.setParameters(parameters);
+
+
+            /**
+             * 设置surfaceView的尺寸 因为camera默认是横屏，所以取得支持尺寸也都是横屏的尺寸
+             * 我们在startPreview方法里面把它矫正了过来，但是这里我们设置设置surfaceView的尺寸的时候要注意 previewSize.height<previewSize.width
+             * previewSize.width才是surfaceView的高度
+             * 一般相机都是屏幕的宽度 这里设置为屏幕宽度 高度自适应 你也可以设置自己想要的大小
+             *
+             */
+
+            picHeight = (screenWidth * pictrueSize.width) / pictrueSize.height;
+
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(screenWidth, (screenWidth * pictrueSize.width) / pictrueSize.height);
+            //这里当然可以设置拍照位置 比如居中 我这里就置顶了
+            //params.gravity = Gravity.CENTER;
+            surfaceView.setLayoutParams(params);
         }
-
-        //这里第三个参数为最小尺寸 getPropPreviewSize方法会对从最小尺寸开始升序排列 取出所有支持尺寸的最小尺寸
-        Camera.Size previewSize = CameraUtil.getInstance().getPropSizeForHeight(parameters.getSupportedPreviewSizes(), 800);
-        parameters.setPreviewSize(previewSize.width, previewSize.height);
-
-        Camera.Size pictrueSize = CameraUtil.getInstance().getPropSizeForHeight(parameters.getSupportedPictureSizes(), 800);
-        parameters.setPictureSize(pictrueSize.width, pictrueSize.height);
-
-        camera.setParameters(parameters);
-
-        /**
-         * 设置surfaceView的尺寸 因为camera默认是横屏，所以取得支持尺寸也都是横屏的尺寸
-         * 我们在startPreview方法里面把它矫正了过来，但是这里我们设置设置surfaceView的尺寸的时候要注意 previewSize.height<previewSize.width
-         * previewSize.width才是surfaceView的高度
-         * 一般相机都是屏幕的宽度 这里设置为屏幕宽度 高度自适应 你也可以设置自己想要的大小
-         *
-         */
-
-        picHeight = (screenWidth * pictrueSize.width) / pictrueSize.height;
-
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(screenWidth, (screenWidth * pictrueSize.width) / pictrueSize.height);
-        //这里当然可以设置拍照位置 比如居中 我这里就置顶了
-        //params.gravity = Gravity.CENTER;
-        surfaceView.setLayoutParams(params);
     }
 
     /**
@@ -618,9 +625,11 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
      * 释放相机资源
      */
     private void releaseCamera() {
+        Toast.makeText(context, "release="+(mCamera != null), Toast.LENGTH_SHORT).show();
         if (mCamera != null) {
             mCamera.setPreviewCallback(null);
             mCamera.stopPreview();
+//            surfaceView.releasePointerCapture();
             mCamera.release();
             mCamera = null;
         }

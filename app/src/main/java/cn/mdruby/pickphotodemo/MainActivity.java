@@ -14,6 +14,7 @@ import java.util.List;
 import cn.mdruby.pickphotovideoview.MediaModel;
 import cn.mdruby.pickphotovideoview.PickConfig;
 import cn.mdruby.pickphotovideoview.PickPhotoView;
+import cn.mdruby.pickphotovideoview.camera.activity.CameraVideoActivity;
 
 public class MainActivity extends AppCompatActivity {
     ImageView iv;
@@ -41,6 +42,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,VideoActivity.class));
+            }
+        });
+
+        Button cameraBtn = (Button) findViewById(R.id.camera);
+        cameraBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentCamera = new Intent(MainActivity.this, CameraVideoActivity.class);
+                startActivityForResult(intentCamera,0x01);
             }
         });
     }

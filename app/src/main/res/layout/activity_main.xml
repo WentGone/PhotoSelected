@@ -16,6 +16,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/video"
         android:text="video"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/camera"
+        android:text="camera"/>
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
