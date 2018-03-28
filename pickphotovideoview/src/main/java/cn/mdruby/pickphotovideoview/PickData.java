@@ -12,8 +12,10 @@ public class PickData implements Serializable{
     private boolean useLocalCamera = false;
     private int count;
     private int bottomBarViewRes;
-    private boolean showChecked;
+    private boolean showChecked = true;
     private boolean showBottomBar = true;
+    private boolean canZip;
+    private boolean canCrop;
 
     public boolean isShowCamera() {
         return showCamera;
@@ -69,5 +71,21 @@ public class PickData implements Serializable{
 
     public void setShowBottomBar(boolean showBottomBar) {
         this.showBottomBar = showBottomBar;
+    }
+
+    public boolean isCanZip() {
+        return canZip;
+    }
+
+    public void setCanZip(boolean canZip) {
+        this.canZip = canZip;
+    }
+
+    public boolean isCanCrop() {
+        return canCrop;
+    }
+
+    public void setCanCrop(boolean canCrop) {
+        this.canCrop = canCrop;
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.mdruby.pickphotovideoview">
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -18,7 +19,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -31,9 +32,12 @@
             android:name=".activity.PickPhotoPreviewActivity"
             android:label="@string/title_activity_pick_photo_preview"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".activity.PickVideoPreviewActivity"></activity>
-        <activity android:name=".camera.activity.CameraVideoActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+        <activity android:name=".activity.PickVideoPreviewActivity" />
+        <activity
+            android:name=".camera.activity.CameraVideoActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+        <activity android:name=".activity.PickCropActivity"></activity>
     </application>
 
 </manifest>

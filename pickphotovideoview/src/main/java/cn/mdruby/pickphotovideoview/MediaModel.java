@@ -17,6 +17,15 @@ public class MediaModel implements Serializable,Comparable<MediaModel>{
     private long duration;
     private String durationStr;
     private boolean selected;
+    private String cropPath;
+
+    public String getCropPath() {
+        return cropPath;
+    }
+
+    public void setCropPath(String cropPath) {
+        this.cropPath = cropPath;
+    }
 
     public boolean isSelected() {
         return selected;

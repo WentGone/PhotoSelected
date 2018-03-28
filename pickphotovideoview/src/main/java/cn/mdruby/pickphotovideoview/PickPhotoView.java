@@ -50,6 +50,11 @@ public class PickPhotoView {
             return this;
         }
 
+        /**
+         * 最多可以选择几张照片
+         * @param count
+         * @return
+         */
         public Bulid setCount(int count){
             pickData.setCount(count);
             return this;
@@ -68,6 +73,26 @@ public class PickPhotoView {
 
         public Bulid showCheckedIcon(boolean show){
             pickData.setShowChecked(show);
+            return this;
+        }
+
+        /**
+         * 是否可以压缩
+         * @param canZip
+         * @return
+         */
+        public Bulid setCanZip(boolean canZip){
+            pickData.setCanZip(canZip);
+            return this;
+        }
+
+        /**
+         * 是否可以剪裁  [暂时只能与单张图片剪裁]
+         * @param canCrop
+         * @return
+         */
+        public Bulid setCanCrop(boolean canCrop){
+            pickData.setCanCrop(canCrop);
             return this;
         }
 

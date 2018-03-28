@@ -68,6 +68,7 @@ public class PickConfig {
          * 获取SD卡权限
          */
         public static final int GET_EXTERNAL_STORAGE_REQUEST_CODE = 0x875;
+        public static final int CROP_IMAGE = 0x002;
     }
 
     public static class KEY{
@@ -76,5 +77,7 @@ public class PickConfig {
         public static final String MEDIA_COUNT = "media_count";
         public static final String MEDIA_NOW_COUNT = "media_now_count";
         public static final String PICK_DATA_INTENT = "pick_data_intent";
+        public static final String MEDIA_DATA_ONE = "media_data_one";
+        public static final String CROP_IMAGE_FILE_PATH = "crop_image_file_path";
     }
 }

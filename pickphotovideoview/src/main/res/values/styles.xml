@@ -23,4 +23,13 @@
         <!-- 设置 显示在toobar上菜单文字的颜色 -->
         <item name="actionMenuTextColor">#333333</item>
     </style>
+
+
+    <style parent="Theme.AppCompat.Light.Dialog.Alert" name="NoDialogTitleView">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 </resources>
