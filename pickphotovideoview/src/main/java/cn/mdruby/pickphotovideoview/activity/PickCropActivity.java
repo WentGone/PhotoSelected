@@ -18,6 +18,9 @@ import cn.mdruby.pickphotovideoview.PickConfig;
 import cn.mdruby.pickphotovideoview.R;
 import cn.mdruby.pickphotovideoview.util.FileUtil;
 
+/**
+ * 裁剪图片界面
+ */
 public class PickCropActivity extends AppCompatActivity {
     private CropImageView cropImageView;
     private MediaModel mediaModel;
@@ -40,7 +43,7 @@ public class PickCropActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Bitmap croppedImage = cropImageView.getCroppedImage();
-                File file = FileUtil.saveImage(croppedImage);
+                File file = FileUtil.saveImage(PickCropActivity.this,croppedImage);
                 Intent intent = getIntent();
                 intent.putExtra(PickConfig.KEY.CROP_IMAGE_FILE_PATH,file.getAbsolutePath());
                 setResult(RESULT_OK,intent);

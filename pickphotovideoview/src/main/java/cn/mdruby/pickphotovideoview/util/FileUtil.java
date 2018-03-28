@@ -1,5 +1,6 @@
 package cn.mdruby.pickphotovideoview.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
 
@@ -15,14 +16,14 @@ import cn.mdruby.pickphotovideoview.App;
  */
 
 public class FileUtil {
-    public static File saveImage(Bitmap bmp) {
+    public static File saveImage(Context context,Bitmap bmp) {
         File appDir = new File(Environment.getExternalStorageDirectory(), "broewers");
 
         if (!appDir.exists()) {
-            appDir.mkdir();
+//            appDir.mkdir();
         }
         String fileName = System.currentTimeMillis() + ".jpg";
-//        appDir = App.getContext().getFilesDir();
+        appDir = context.getFilesDir();
         File file = new File(appDir, fileName);
         try {
             FileOutputStream fos = new FileOutputStream(file);

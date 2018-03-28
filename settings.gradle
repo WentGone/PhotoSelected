@@ -1,1 +1,1 @@
-include ':app', ':pickphotovideoview', ':lib'
+include ':app', ':pickphotovideoview'

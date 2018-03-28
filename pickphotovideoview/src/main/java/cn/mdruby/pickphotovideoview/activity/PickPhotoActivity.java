@@ -30,7 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
 import java.io.IOException;
