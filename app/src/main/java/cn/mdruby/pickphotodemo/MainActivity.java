@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new PickPhotoView.Bulid(MainActivity.this)
-                        .useLocalCamera(false)
+                        .useLocalCamera(true)
                         .showCamera(true)
                         .setCount(2)
                         .setCanZip(true)

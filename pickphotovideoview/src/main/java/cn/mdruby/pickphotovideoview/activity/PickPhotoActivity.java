@@ -282,12 +282,12 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
 
     private void crop(){
         MediaModel mediaModel = mSelecteds.get(0);
-        Uri inputUri = Uri.fromFile(mediaModel.getFile());
+        if (mediaModel.getFile() == null){
+            mediaModel.setFile(new File(mediaModel.getPath()));
+        }
         File file = new File(Environment.getExternalStorageDirectory(),System.currentTimeMillis()+".jpg");
         outputUri = Uri.fromFile(file);
         cropPath = outputUri.getPath();
-//        Crop.of(inputUri, outputUri).asSquare().start(this);
-//        Crop.of(inputUri,outputUri).withAspect(0,0).asSquare().start(this);
         Intent intent = new Intent(this,PickCropActivity.class);
         intent.putExtra(PickConfig.KEY.MEDIA_DATA_ONE,mediaModel);
         startActivityForResult(intent,PickConfig.RequestCode.CROP_IMAGE);
