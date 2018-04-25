@@ -96,6 +96,11 @@ public class PickPhotoView {
             return this;
         }
 
+        public Bulid setSingle(boolean single){
+            pickData.setSingle(single);
+            return this;
+        }
+
         private PickPhotoView create(){
             return new PickPhotoView(this);
         }

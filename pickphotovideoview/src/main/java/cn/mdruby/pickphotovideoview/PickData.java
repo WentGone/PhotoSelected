@@ -16,6 +16,7 @@ public class PickData implements Serializable{
     private boolean showBottomBar = true;
     private boolean canZip;
     private boolean canCrop;
+    private boolean single = false;
 
     public boolean isShowCamera() {
         return showCamera;
@@ -87,5 +88,13 @@ public class PickData implements Serializable{
 
     public void setCanCrop(boolean canCrop) {
         this.canCrop = canCrop;
+    }
+
+    public boolean isSingle() {
+        return single;
+    }
+
+    public void setSingle(boolean single) {
+        this.single = single;
     }
 }

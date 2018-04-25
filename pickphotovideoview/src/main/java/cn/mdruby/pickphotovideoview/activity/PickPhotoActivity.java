@@ -94,6 +94,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     private boolean canCrop = false;
     private String cropPath = "";
     private Uri outputUri;
+    private boolean single = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,15 +180,15 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         showBottomBar = pickData.isShowBottomBar();
         canZip = pickData.isCanZip();
         canCrop = pickData.isCanCrop();
+        single = pickData.isSingle();
+        //如果设置一张图片  那么为单选
+        if (selectedCount == 1){
+            single = true;
+        }
     }
 
     private void initBottomBar() {
         int childCount = mLLayoutContent.getChildCount();
-        /*if (){
-            View view = View.inflate(this,bottomBarViewRes,null);
-
-        }else {
-        }*/
         View view = LayoutInflater.from(this).inflate((childCount<2 && bottomBarViewRes>0)?bottomBarViewRes:R.layout.pick_photo_bottom_bar,mLLayoutContent,false);
         if (showBottomBar){
             mLLayoutContent.addView(view);
@@ -257,29 +258,37 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                 successPermisson();
             } else {
                 Toast.makeText(this, "已拒绝权限！", Toast.LENGTH_SHORT).show();
+//                this.finish();
             }
         }
     }
 
     private void callback() {
-        if (canCrop && mSelecteds.size()==1){
-            crop();
-        }else {
-            if (canZip){
-                if (!loading.isShowing()){
-                    loading.show();
-                }
-                zip();
+        if (mSelecteds.size()>1){
+            if (canCrop && mSelecteds.size()==1){
+                crop();
             }else {
-                Intent intent = getIntent();
-                intent.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
-                setResult(RESULT_OK,intent);
-                PickPhotoActivity.this.finish();
+                if (canZip){
+                    if (!loading.isShowing()){
+                        loading.show();
+                    }
+                    zip();
+                }else {
+                    Intent intent = getIntent();
+                    intent.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
+                    setResult(RESULT_OK,intent);
+                    PickPhotoActivity.this.finish();
+                }
             }
+        }else {
+            Toast.makeText(this, "请选择一张图片", Toast.LENGTH_SHORT).show();
         }
 
     }
 
+    /**
+     * 裁剪
+     */
     private void crop(){
         MediaModel mediaModel = mSelecteds.get(0);
         if (mediaModel.getFile() == null){
@@ -294,6 +303,10 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     }
 
     private int counts = 0;
+
+    /**
+     * 压缩
+     */
     private void zip(){
         if (loading.isShowing()){
             loading.show();
@@ -345,7 +358,9 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
      */
     private void clickListItem(int position) {
         List<MediaModel> item = mListAdapter.getItem(position);
-        mTVcount.setText("");
+        if (mTVcount != null){
+            mTVcount.setText("");
+        }
         mSelecteds.clear();
         mTVtitle.setText(mListAdapter.getDirName(position));
         mDatas.clear();
@@ -485,7 +500,9 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                 setSelected(item);
                 mTVcount.setText(mSelecteds.size()+"");
             }else {
-                Toast.makeText(this, "选择的图片不能超过"+selectedCount+"张", Toast.LENGTH_SHORT).show();
+                if (!single){
+                    Toast.makeText(this, "选择的图片不能超过"+selectedCount+"张", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

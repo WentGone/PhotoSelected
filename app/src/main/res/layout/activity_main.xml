@@ -10,26 +10,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/click"
-        android:text="进入图库"/>
+        android:text="进入图库"
+        android:visibility="gone"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Cameravideo"
+        android:text="拍照、录像"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_xitong"
+        android:text="系统"
+        android:visibility="gone"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/video"
-        android:text="video"/>
+        android:text="video"
+        android:visibility="gone"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/camera"
-        android:text="camera"/>
+        android:text="camera"
+        android:visibility="gone"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/otherApp"
-        android:text="otherApp"/>
+        android:text="otherApp"
+        android:visibility="gone"/>
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:id="@+id/image"/>
+        android:id="@+id/image"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -38,6 +54,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
 </LinearLayout>

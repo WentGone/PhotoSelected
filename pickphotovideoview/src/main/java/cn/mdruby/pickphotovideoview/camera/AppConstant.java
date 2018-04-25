@@ -9,6 +9,7 @@ public class AppConstant {
         int ERROR = 2;
         int START_VIDEO = 3;
         int STOP_VIDEO = 4;
+        int POST = 5;
     }
 
     public interface KEY{

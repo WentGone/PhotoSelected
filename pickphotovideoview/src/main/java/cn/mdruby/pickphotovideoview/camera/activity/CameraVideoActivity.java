@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
@@ -21,11 +22,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -152,6 +155,14 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 case AppConstant.WHAT.STOP_VIDEO:
                     isStartVideo = false;
                     break;
+                case AppConstant.WHAT.POST:
+                    if (mCamera == null) {
+                        mCamera = getCamera(mCameraId);
+                        if (mHolder != null) {
+                            startPreview(mCamera, mHolder);
+                        }
+                    }
+                    break;
             }
         }
     };
@@ -159,7 +170,6 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_camera_video);
         context = this;
         mMagicIndicator = (MagicIndicator) findViewById(R.id.act_camera_video_MagicIndicator);
@@ -168,8 +178,57 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
         mIVShowPhoto = (ImageView) findViewById(R.id.act_camera_video_IV_showPhoto);
         mTVTime = (TextView) findViewById(R.id.act_camera_video_TV_time);
         mHolder = surfaceView.getHolder();
-        initData();
         requestPermission();
+    }
+
+    private void requestPermission() {
+        //判断是否开启摄像头权限
+        if ((ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+                &&(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)) {
+            StartListener();
+
+            //判断是否开启语音权限
+        } else {
+            //请求获取摄像头权限
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO}, CAMERA_REQUEST_CODE);
+        }
+    }
+
+    /**
+     * 请求权限回调
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if ((grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                StartListener();
+            } else {
+                Toast.makeText(this, "已拒绝权限！", Toast.LENGTH_SHORT).show();
+                this.finish();
+            }
+        }
+    }
+
+    private void initData() {
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        screenWidth = dm.widthPixels;
+        screenHeight = dm.heightPixels;
+
+        menuPopviewHeight = screenHeight - screenWidth * 4 / 3;
+        animHeight = (screenHeight - screenWidth - menuPopviewHeight - SystemUtils.dp2px(context, 44)) / 2;
+
+        //这里相机取景框我这是为宽高比3:4 所以限制底部控件的高度是剩余部分
+        RelativeLayout.LayoutParams bottomParam = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, menuPopviewHeight);
+        bottomParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+//        homecamera_bottom_relative.setLayoutParams(bottomParam);
+    }
+
+    private void StartListener() {
+        initData();
         setListener();
         mIVStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,6 +250,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                         recorderRotation = CameraUtil.getInstance().getRecorderRotation(mCameraId);
                         setupCameraVideo(mCamera);
                         startVideo();
+//                        startRecord();
                     }else {
                         endVideoRecord();
                     }
@@ -222,55 +282,9 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 return true;
             }
         });
-    }
 
-    private void requestPermission() {
-        //判断是否开启摄像头权限
-        if ((ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
-                &&(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)) {
-            StartListener();
 
-            //判断是否开启语音权限
-        } else {
-            //请求获取摄像头权限
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO}, CAMERA_REQUEST_CODE);
-        }
-    }
-
-    /**
-     * 请求权限回调
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_REQUEST_CODE) {
-            if ((grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                StartListener();
-            } else {
-                Toast.makeText(this, "已拒绝权限！", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void initData() {
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        screenWidth = dm.widthPixels;
-        screenHeight = dm.heightPixels;
-
-        menuPopviewHeight = screenHeight - screenWidth * 4 / 3;
-        animHeight = (screenHeight - screenWidth - menuPopviewHeight - SystemUtils.dp2px(context, 44)) / 2;
-
-        //这里相机取景框我这是为宽高比3:4 所以限制底部控件的高度是剩余部分
-        RelativeLayout.LayoutParams bottomParam = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, menuPopviewHeight);
-        bottomParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-//        homecamera_bottom_relative.setLayoutParams(bottomParam);
-    }
-
-    private void StartListener() {
-        mHandler.postDelayed(new Runnable() {
+        /*mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (mCamera == null) {
@@ -280,7 +294,9 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                     }
                 }
             }
-        },500);
+        },500);*/
+
+        mHandler.sendEmptyMessageDelayed(AppConstant.WHAT.POST,500);
     }
 
     @Override
@@ -295,6 +311,103 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
         super.finish();
     }
     private long startTime = 0;
+
+    /**
+     * 开始录制
+     */
+    private void startRecord() {
+        if (mediaRecorder == null) {
+            mediaRecorder = new MediaRecorder(); // 创建MediaRecorder
+        }else {
+            mediaRecorder.reset();
+        }
+        if (mCamera != null) {
+            mCamera.stopPreview();
+            mCamera.unlock();
+            mediaRecorder.setCamera(mCamera);
+        }
+        try {
+            // 设置音频采集方式
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+            //设置视频的采集方式
+            mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+            //设置文件的输出格式
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);//aac_adif， aac_adts， output_format_rtp_avp， output_format_mpeg2ts ，webm
+            //设置audio的编码格式
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            //设置video的编码格式
+//            mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+            mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
+            //设置录制的视频编码比特率
+            mediaRecorder.setVideoEncodingBitRate(1024 * 1024);
+            //设置录制的视频帧率,注意文档的说明:
+            mediaRecorder.setVideoFrameRate(30);
+            //设置要捕获的视频的宽度和高度
+            mHolder.setFixedSize(320, 240);//最高只能设置640x480
+            mediaRecorder.setVideoSize(320, 240);//最高只能设置640x480
+            //设置记录会话的最大持续时间（毫秒）
+            mediaRecorder.setMaxDuration(60 * 1000);
+            mediaRecorder.setPreviewDisplay(mHolder.getSurface());
+            String path = getExternalCacheDir().getPath();
+            pathName = System.currentTimeMillis() + "";
+            //视频存储路径
+            file = new File(Environment.getExternalStorageDirectory() + File.separator + pathName + AppConfig.MP4);
+
+            //如果没有要创建
+            BitmapUtils.makeDir(file);
+
+            // 设置录制视频文件的输出路径
+            mediaRecorder.setOutputFile(file.getAbsolutePath());
+
+            //准备录制
+            mediaRecorder.prepare();
+            //开始录制
+            mediaRecorder.start();
+            /*if (path != null) {
+                File dir = new File(path + "/as");
+                if (!dir.exists()) {
+                    dir.mkdir();
+                }
+                path = dir + "/" + System.currentTimeMillis() + ".mp4";
+
+//                isRecording = true;
+//                btnStartStop.setText("停止");
+            }*/
+            mediaRecorder.setOnErrorListener(new MediaRecorder.OnErrorListener() {
+
+                @Override
+                public void onError(MediaRecorder mr, int what, int extra) {
+                    Toast.makeText(context, "错误", Toast.LENGTH_SHORT).show();
+                    mHandler.sendEmptyMessage(AppConstant.WHAT.STOP_VIDEO);
+                    // 发生错误，停止录制
+                    if (mediaRecorder != null) {
+                        mediaRecorder.stop();
+                        mediaRecorder.release();
+                        mediaRecorder = null;
+                    }
+                }
+            });
+
+            mediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
+                @Override
+                public void onInfo(MediaRecorder mr, int what, int extra) {
+                    //录制完成
+                    Log.e(TAG, "onInfo: " );
+                    mHandler.sendEmptyMessage(AppConstant.WHAT.STOP_VIDEO);
+                }
+            });
+
+            // 准备、开始
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+            videoStarted = true;
+            isStartVideo = true;
+            mHandler.sendEmptyMessage(AppConstant.WHAT.START_VIDEO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            videoStarted = false;
+        }
+    }
     protected void startVideo() {
         try {
             startTime = System.currentTimeMillis();
@@ -312,7 +425,6 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 mediaRecorder.reset();
             }
 
-//
             mCamera.unlock();
             mediaRecorder.setCamera(mCamera);
             //设置视频输出的方向 很多设备在播放的时候需要设个参数 这算是一个文件属性
@@ -349,6 +461,8 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 profile.audioCodec = MediaRecorder.AudioEncoder.AAC;
                 profile.audioChannels = 1;
                 profile.audioSampleRate = 16000;
+
+
 
                 profile.videoCodec = MediaRecorder.VideoEncoder.H264;
                 mediaRecorder.setProfile(profile);
@@ -405,6 +519,12 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
             mHandler.sendEmptyMessage(AppConstant.WHAT.START_VIDEO);
         } catch (Exception e) {
             videoStarted = false;
+            if (mediaRecorder != null) {
+                mediaRecorder.stop();
+                mediaRecorder.release();
+                mediaRecorder = null;
+//            StartListener();
+            }
             e.printStackTrace();
         }
     }
@@ -452,6 +572,13 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
         try {
             if (!isVideo){
                 setupCamera(camera);
+
+                /*if (camera == null){
+                    camera = getCamera(mCameraId);
+//            Toast.makeText(context, "camera is null", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "setupCamera: camera is null" );
+                }
+                resCameraParametrs(camera);*/
             }else {
                 recorderRotation = CameraUtil.getInstance().getRecorderRotation(mCameraId);
                 setupCameraVideo(camera);
@@ -568,6 +695,52 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
         }
     }
 
+    /***
+     *
+     * 重置相机拍照尺寸
+     */
+    public void resCameraParametrs(Camera camera) {
+        try {
+            // 获取屏幕
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+
+            Camera.Parameters parameters = camera.getParameters();// 获取相机参数集
+            List<Camera.Size> SupportedPreviewSizes = parameters.getSupportedPreviewSizes();// 获取支持预览照片的尺寸
+            Camera.Size previewSize = null;
+            for (Camera.Size size2 : SupportedPreviewSizes) {
+                int w = size2.width;
+                int h = size2.height;
+                if (size.x == h) {
+                    previewSize = size2;
+                    break;
+                }
+            }
+
+            parameters.setPreviewSize(previewSize.width, previewSize.height);//
+            // parameters.setPreviewFrameRate(3);// 每秒3帧 每秒从摄像头里面获得3个画面
+            // parameters.setPictureFormat(PixelFormat.JPEG);// 设置照片输出的格式
+            // parameters.set("jpeg-quality", 20);// 设置照片质量
+            parameters.setJpegQuality(25);
+
+            // 设置预览照片的大小
+            List<Camera.Size> supportedPictureSizes = parameters.getSupportedPictureSizes();// 获取支持保存图片的尺寸
+            Camera.Size pictureSize = supportedPictureSizes.get(0);// 从List取出Size
+            // parameters.setPictureSize(previewSize.width,
+            // previewSize.height);//
+            parameters.setPictureSize(pictureSize.width, pictureSize.height);//
+            camera.setParameters(parameters);
+        } catch (Exception e) {
+            // TODO: handle exception
+            Log.e("--Exception--", e.getMessage().toString());
+
+        }
+
+    }
+
+
     /**
      * 设置Video
      */
@@ -589,12 +762,15 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 //获取相机所有支持尺寸
                 videoSiezes = parameters.getSupportedVideoSizes();
                 for (Camera.Size size : videoSiezes) {
+                    Log.e(TAG, "setupCameraVideo: "+size.width+"-"+size.height);
                 }
+            }else {
+                Log.e(TAG, "setupCameraVideo: parameters=null" );
             }
 
             if (videoSiezes != null && videoSiezes.size() > 0) {
                 //拿到一个预览宽度最小为720像素的预览值
-                Camera.Size videoSize = CameraUtil.getInstance().getPropVideoSize(videoSiezes, 720);
+                Camera.Size videoSize = CameraUtil.getInstance().getPropVideoSize(videoSiezes, surfaceView.getHeight());
                 video_width = videoSize.width;
                 video_height = videoSize.height;
             }
@@ -685,6 +861,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                         mTVTime.setVisibility(index == 0?View.GONE:View.VISIBLE);
                     }
                 });
+
                 return simplePagerTitleView;
             }
 
