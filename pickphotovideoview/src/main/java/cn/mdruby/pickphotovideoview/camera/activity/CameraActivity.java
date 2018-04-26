@@ -10,15 +10,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.cjt2325.cameralibrary.JCameraView;
-import com.cjt2325.cameralibrary.listener.ClickListener;
-import com.cjt2325.cameralibrary.listener.ErrorListener;
-import com.cjt2325.cameralibrary.listener.JCameraListener;
-import com.cjt2325.cameralibrary.util.DeviceUtil;
-import com.cjt2325.cameralibrary.util.FileUtil;
 
-import java.io.File;
-
+import cameralibrary.JCameraView;
+import cameralibrary.listener.ClickListener;
+import cameralibrary.listener.ErrorListener;
+import cameralibrary.listener.JCameraListener;
+import cameralibrary.util.DeviceUtil;
+import cameralibrary.util.FileUtil;
 import cn.mdruby.pickphotovideoview.PickData;
 import cn.mdruby.pickphotovideoview.R;
 import cn.mdruby.pickphotovideoview.activity.PickPhotoActivity;

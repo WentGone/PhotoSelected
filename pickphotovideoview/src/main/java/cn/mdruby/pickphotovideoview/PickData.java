@@ -1,8 +1,9 @@
 package cn.mdruby.pickphotovideoview;
 
-import com.cjt2325.cameralibrary.JCameraView;
 
 import java.io.Serializable;
+
+import cameralibrary.JCameraView;
 
 /**
  * Created by Went_Gone on 2018/1/5.

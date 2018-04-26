@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.cjt2325.cameralibrary.JCameraView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import cameralibrary.JCameraView;
 import cn.mdruby.pickphotovideoview.MediaModel;
 import cn.mdruby.pickphotovideoview.PickConfig;
 import cn.mdruby.pickphotovideoview.PickPhotoView;
