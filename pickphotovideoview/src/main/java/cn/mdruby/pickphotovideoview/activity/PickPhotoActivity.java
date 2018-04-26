@@ -265,7 +265,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     }
 
     private void callback() {
-        if (mSelecteds.size()>1){
+        if (mSelecteds.size()>0){
             if (canCrop && mSelecteds.size()==1){
                 crop();
             }else {
