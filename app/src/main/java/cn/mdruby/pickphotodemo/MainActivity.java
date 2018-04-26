@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.cjt2325.cameralibrary.JCameraView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                         .showCamera(true)
                         .setCount(1)
                         .setCanZip(true)
+                        .setVideoRate(JCameraView.MEDIA_QUALITY_HIGH)
                         .setCanCrop(true)
                         .showCheckedIcon(true)
                         .setBottomBarViewRes(R.layout.pick_photo_bottom_bars)

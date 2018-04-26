@@ -101,6 +101,11 @@ public class PickPhotoView {
             return this;
         }
 
+        public Bulid setVideoRate(int videoRate){
+            pickData.setVideoRate(videoRate);
+            return this;
+        }
+
         private PickPhotoView create(){
             return new PickPhotoView(this);
         }

@@ -1,5 +1,7 @@
 package cn.mdruby.pickphotovideoview;
 
+import com.cjt2325.cameralibrary.JCameraView;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +19,7 @@ public class PickData implements Serializable{
     private boolean canZip;
     private boolean canCrop;
     private boolean single = false;
+    private int videoRate = JCameraView.MEDIA_QUALITY_MIDDLE;
 
     public boolean isShowCamera() {
         return showCamera;
@@ -96,5 +99,13 @@ public class PickData implements Serializable{
 
     public void setSingle(boolean single) {
         this.single = single;
+    }
+
+    public void setVideoRate(int videoRate) {
+        this.videoRate = videoRate;
+    }
+
+    public int getVideoRate() {
+        return videoRate;
     }
 }

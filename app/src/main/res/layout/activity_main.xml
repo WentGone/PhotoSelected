@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/click"
         android:text="进入图库"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

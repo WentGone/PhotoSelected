@@ -37,7 +37,8 @@
             android:name=".camera.activity.CameraVideoActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
-        <activity android:name=".activity.PickCropActivity"></activity>
+        <activity android:name=".activity.PickCropActivity" />
+        <activity android:name=".camera.activity.CameraActivity"></activity>
     </application>
 
 </manifest>

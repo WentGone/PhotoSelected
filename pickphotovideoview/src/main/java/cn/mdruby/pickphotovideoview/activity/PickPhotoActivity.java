@@ -53,6 +53,7 @@ import cn.mdruby.pickphotovideoview.abstracts.OnRVListClickListener;
 import cn.mdruby.pickphotovideoview.adapter.RVPhotoGridAdapter;
 import cn.mdruby.pickphotovideoview.adapter.RVPhotoListAdapter;
 import cn.mdruby.pickphotovideoview.camera.AppConstant;
+import cn.mdruby.pickphotovideoview.camera.activity.CameraActivity;
 import cn.mdruby.pickphotovideoview.camera.activity.CameraVideoActivity;
 import cn.mdruby.pickphotovideoview.ui.CustomLoadingDailog;
 import cn.mdruby.pickphotovideoview.ui.DividerItemDecoration;
@@ -397,7 +398,9 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     @Override
     public void onCameraClick() {
         if (!useLocalCamera){
-            Intent intent = new Intent(this, CameraVideoActivity.class);
+//            Intent intent = new Intent(this, CameraVideoActivity.class);
+            Intent intent = new Intent(this, CameraActivity.class);
+            intent.putExtra(PICK_DATA,pickData);
             startActivityForResult(intent, PickConfig.RequestCode.TAKE_PHOTO_BY_SELF);
         }else {
             checkCameraPermission();
@@ -534,6 +537,33 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                         MediaPlayer mediaPlayer = new MediaPlayer();
                         try {
                             mediaPlayer.setDataSource(imagePath);
+                            mediaPlayer.prepare();
+                            int duration = mediaPlayer.getDuration();
+                            String converted = String.format("%02d:%02d",
+                                    TimeUnit.MILLISECONDS.toMinutes(duration),
+                                    TimeUnit.MILLISECONDS.toSeconds(duration) -
+                                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
+                            );
+                            mediaModel.setDuration(duration);
+                            mediaModel.setDurationStr(converted);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    mDatas.add(0,mediaModel);
+                    mAdapter.notifyDataSetChanged();
+                }else if (resultCode == 101){
+                    String path = data.getStringExtra("path");
+                    Log.e(TAG, "onActivityResult: "+path);
+                    MediaModel mediaModel = new MediaModel();
+                    mediaModel.setFile(new File(path));
+                    mediaModel.setPath(path);
+                    mediaModel.setThumPath(path);
+                    mediaModel.setMimeType(path.endsWith(".mp4")?"video":"image");
+                    if (path.endsWith(".mp4")){
+                        MediaPlayer mediaPlayer = new MediaPlayer();
+                        try {
+                            mediaPlayer.setDataSource(path);
                             mediaPlayer.prepare();
                             int duration = mediaPlayer.getDuration();
                             String converted = String.format("%02d:%02d",

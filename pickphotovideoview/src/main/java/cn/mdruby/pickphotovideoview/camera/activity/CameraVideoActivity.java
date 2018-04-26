@@ -112,6 +112,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
     private MediaRecorder mediaRecorder;
     private TextView mTVTime;
     private boolean isStartVideo = false;
+    private boolean isPreview = false;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -246,6 +247,12 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                         safeToTakePicture = false;
                     }
                 }else {
+                    if (mCamera == null) {
+                        mCamera = getCamera(mCameraId);
+                        if (mHolder != null) {
+                            startPreview(mCamera, mHolder);
+                        }
+                    }
                     if (!videoStarted){
                         recorderRotation = CameraUtil.getInstance().getRecorderRotation(mCameraId);
                         setupCameraVideo(mCamera);
@@ -569,8 +576,12 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
      * 预览相机
      */
     private void startPreview(Camera camera, SurfaceHolder holder) {
+
         try {
             if (!isVideo){
+                if (!isPreview){
+                    camera.startPreview();
+                }
                 setupCamera(camera);
 
                 /*if (camera == null){
@@ -589,6 +600,7 @@ public class CameraVideoActivity extends AppCompatActivity implements SurfaceHol
                 CameraUtil.getInstance().setCameraDisplayOrientation((Activity) context, mCameraId, camera);
                 camera.setDisplayOrientation(90);
                 camera.startPreview();
+                isPreview = true;
             }
             isview = true;
             safeToTakePicture = true;
