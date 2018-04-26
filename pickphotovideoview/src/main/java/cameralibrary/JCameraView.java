@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 
@@ -49,7 +50,7 @@ import cn.mdruby.pickphotovideoview.R;
  */
 public class JCameraView extends FrameLayout implements CameraInterface.CameraOpenOverCallback, SurfaceHolder
         .Callback, CameraView {
-//    private static final String TAG = "JCameraView";
+    private static final String TAG = "JCameraView";
 
     //Camera状态机
     private CameraMachine machine;
@@ -170,6 +171,9 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             }
         });
         mCaptureLayout = (CaptureLayout) view.findViewById(R.id.capture_layout);
+
+//        Toast.makeText(mContext, "==="+duration, Toast.LENGTH_SHORT).show();
+        Log.e(TAG, "initView: "+duration );
         mCaptureLayout.setDuration(duration);
         mCaptureLayout.setIconSrc(iconLeft, iconRight);
         mFoucsView = (FoucsView) view.findViewById(R.id.fouce_view);
@@ -622,6 +626,13 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
                 mFlashLamp.setImageResource(R.drawable.ic_flash_off);
                 machine.flash(Camera.Parameters.FLASH_MODE_OFF);
                 break;
+        }
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+        if (mCaptureLayout!=null){
+            mCaptureLayout.setDuration(duration);
         }
     }
 }

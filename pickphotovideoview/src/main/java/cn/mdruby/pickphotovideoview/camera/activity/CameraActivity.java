@@ -31,10 +31,15 @@ public class CameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_camera);
 
         pickData = (PickData) getIntent().getSerializableExtra(PickPhotoActivity.PICK_DATA);
+        if (pickData == null){
+            pickData = new PickData();
+        }
 
         jCameraView = (JCameraView) findViewById(R.id.jcameraview);
         //设置视频保存路径
 //        jCameraView.setSaveVideoPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "JCamera");
+
+        jCameraView.setDuration((pickData.getDuration()<15?15:pickData.getDuration())*1000);
         jCameraView.setSaveVideoPath(Environment.getExternalStorageDirectory().getPath());
         jCameraView.setFeatures(JCameraView.BUTTON_STATE_BOTH);
         jCameraView.setTip("轻触拍照，长按摄像");

@@ -21,6 +21,7 @@ public class PickData implements Serializable{
     private boolean canCrop;
     private boolean single = false;
     private int videoRate = JCameraView.MEDIA_QUALITY_MIDDLE;
+    private int duration = 15;
 
     public boolean isShowCamera() {
         return showCamera;
@@ -108,5 +109,13 @@ public class PickData implements Serializable{
 
     public int getVideoRate() {
         return videoRate;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

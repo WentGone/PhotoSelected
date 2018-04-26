@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                         .useLocalCamera(false)
                         .showCamera(true)
                         .setCount(1)
+                        .setVideoDuration(5*60)
                         .setCanZip(true)
                         .setVideoRate(JCameraView.MEDIA_QUALITY_HIGH)
                         .setCanCrop(true)

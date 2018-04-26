@@ -106,6 +106,16 @@ public class PickPhotoView {
             return this;
         }
 
+        /**
+         * 拍摄视频的长度
+         * @param duration
+         * @return
+         */
+        public Bulid setVideoDuration(int duration){
+            pickData.setDuration(duration);
+            return this;
+        }
+
         private PickPhotoView create(){
             return new PickPhotoView(this);
         }
