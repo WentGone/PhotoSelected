@@ -96,6 +96,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     private String cropPath = "";
     private Uri outputUri;
     private boolean single = false;
+    private boolean cameraComeBack = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,6 +183,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         canZip = pickData.isCanZip();
         canCrop = pickData.isCanCrop();
         single = pickData.isSingle();
+        cameraComeBack = pickData.isCameraComeBack();
         //如果设置一张图片  那么为单选
         if (selectedCount == 1){
             single = true;
@@ -224,7 +226,6 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
             }
             super.onDrawerOpened(drawerView);
         }
-
     }
 
     private void getPermission() {
@@ -550,8 +551,14 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                             e.printStackTrace();
                         }
                     }
-                    mDatas.add(0,mediaModel);
-                    mAdapter.notifyDataSetChanged();
+                    if (!cameraComeBack){
+                        mDatas.add(0,mediaModel);
+                        mAdapter.notifyDataSetChanged();
+                    }else {
+                        //回调
+                        mSelecteds.add(mediaModel);
+                        callback();
+                    }
                 }else if (resultCode == 101){
                     String path = data.getStringExtra("path");
                     Log.e(TAG, "onActivityResult: "+path);
@@ -577,8 +584,14 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                             e.printStackTrace();
                         }
                     }
-                    mDatas.add(0,mediaModel);
-                    mAdapter.notifyDataSetChanged();
+                    if (!cameraComeBack){
+                        mDatas.add(0,mediaModel);
+                        mAdapter.notifyDataSetChanged();
+                    }else {
+                        //回调
+                        mSelecteds.add(mediaModel);
+                        callback();
+                    }
                 }
                 break;
             case PickConfig.RequestCode.PRE_PHOTO_CODE:

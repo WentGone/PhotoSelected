@@ -2,14 +2,19 @@ package cn.mdruby.pickphotovideoview.camera.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import cameralibrary.JCameraView;
 import cameralibrary.listener.ClickListener;
@@ -68,7 +73,13 @@ public class CameraActivity extends AppCompatActivity {
             public void captureSuccess(Bitmap bitmap) {
                 //获取图片bitmap
 //                Log.i("JCameraView", "bitmap = " + bitmap.getWidth());
-                String path = FileUtil.saveBitmap("JCamera", bitmap);
+                String path = FileUtil.saveBitmap("DCIM/Camera", bitmap);
+               /* try {
+                    MediaStore.Images.Media.insertImage(getContentResolver(), path, new File(path).getName(), null);//图片插入到系统图库
+                }catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path)));//通知图库刷新*/
                 Intent intent = new Intent();
                 intent.putExtra("path", path);
                 setResult(101, intent);

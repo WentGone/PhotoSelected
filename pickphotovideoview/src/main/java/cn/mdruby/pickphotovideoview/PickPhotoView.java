@@ -116,6 +116,11 @@ public class PickPhotoView {
             return this;
         }
 
+        public Bulid setCameraComeBack(boolean cameraComeBack){
+            pickData.setCameraComeBack(cameraComeBack);
+            return this;
+        }
+
         private PickPhotoView create(){
             return new PickPhotoView(this);
         }
