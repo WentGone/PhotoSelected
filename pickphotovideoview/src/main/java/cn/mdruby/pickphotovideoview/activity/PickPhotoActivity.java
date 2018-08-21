@@ -629,9 +629,25 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                 mediaModel.setMimeType("image/jpg");
                 mediaModel.setThumPath(path);
                 mediaModel.setPath(path);
+                mediaModel.setFile(new File(path));
 //                mediaModels.add(mediaModel);
-                mDatas.add(0,mediaModel);
-                mAdapter.notifyDataSetChanged();
+                if (cameraComeBack){
+                    mSelecteds.add(mediaModel);
+                    if (canZip){
+                        if (!loading.isShowing()){
+                            loading.show();
+                        }
+                        zip();
+                    }else {
+                        Intent intentReturn = getIntent();
+                        intentReturn.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
+                        setResult(RESULT_OK,intentReturn);
+                        PickPhotoActivity.this.finish();
+                    }
+                }else {
+                    mDatas.add(0,mediaModel);
+                    mAdapter.notifyDataSetChanged();
+                }
                 break;
 
             case PickConfig.RequestCode.CROP_IMAGE:

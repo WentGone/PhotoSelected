@@ -48,17 +48,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new PickPhotoView.Bulid(MainActivity.this)
-                        .useLocalCamera(false)
+                        .useLocalCamera(true)
                         .showCamera(true)
                         .setCount(1)
                         .setCameraComeBack(true)
                         .setVideoDuration(5*60)
                         .setCanZip(true)
                         .setVideoRate(JCameraView.MEDIA_QUALITY_HIGH)
-                        .setCanCrop(true)
                         .showCheckedIcon(true)
                         .setBottomBarViewRes(R.layout.pick_photo_bottom_bars)
-                        .showVideo(true)
+                        .showVideo(false)
                         .start();
             }
         });
@@ -173,12 +172,12 @@ public class MainActivity extends AppCompatActivity {
             case PickConfig.RequestCode.SELECT_PHOTO:
                 if (resultCode == RESULT_OK){
                     List<MediaModel> mediaModels = (List<MediaModel>) data.getSerializableExtra(PickConfig.KEY.MEDIA_FILE_DATA);
-//                    Glide.with(this).load(mediaModels.get(0).getPath()).into(iv);
                     Log.e(TAG, "onActivityResult: "+mediaModels.get(0).getFile().getAbsolutePath() );
                     Glide.with(this).load(mediaModels.get(0).getFile()).into(iv);
                     File file = mediaModels.get(0).getFile();
                     FileInputStream fis = null;
                     try {
+                        Glide.with(this).load(file.getAbsoluteFile()).into(iv);
                         fis = new FileInputStream(file);
                         long size = fis.available();
                         String formatSize = getFormatSize(size);
