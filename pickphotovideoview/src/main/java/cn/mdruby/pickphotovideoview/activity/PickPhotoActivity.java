@@ -590,7 +590,11 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                     }else {
                         //回调
                         mSelecteds.add(mediaModel);
-                        callback();
+//                        callback();
+                        Intent intentReturn = getIntent();
+                        intentReturn.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
+                        setResult(RESULT_OK,intentReturn);
+                        PickPhotoActivity.this.finish();
                     }
                 }
                 break;
@@ -645,8 +649,16 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                         PickPhotoActivity.this.finish();
                     }
                 }else {
-                    mDatas.add(0,mediaModel);
-                    mAdapter.notifyDataSetChanged();
+                    if (!cameraComeBack){
+                        mDatas.add(0,mediaModel);
+                        mAdapter.notifyDataSetChanged();
+                    }else {
+                        //回调
+                        mSelecteds.add(mediaModel);
+                        callback();
+                    }
+//                    mDatas.add(0,mediaModel);
+//                    mAdapter.notifyDataSetChanged();
                 }
                 break;
 

@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new PickPhotoView.Bulid(MainActivity.this)
-                        .useLocalCamera(true)
+                        .useLocalCamera(false)
                         .showCamera(true)
                         .setCount(1)
                         .setCameraComeBack(true)
