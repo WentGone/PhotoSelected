@@ -285,7 +285,6 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         }else {
             Toast.makeText(this, "请选择一张图片", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     /**
@@ -552,6 +551,11 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                         }
                     }
                     if (!cameraComeBack){
+                        if (mSelecteds.size()<selectedCount){
+                            mediaModel.setSelected(true);
+                            mSelecteds.add(mediaModel);
+                            mTVcount.setText(mSelecteds.size()+"");
+                        }
                         mDatas.add(0,mediaModel);
                         mAdapter.notifyDataSetChanged();
                     }else {
@@ -585,6 +589,11 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                         }
                     }
                     if (!cameraComeBack){
+                        if (mSelecteds.size()<selectedCount){
+                            mediaModel.setSelected(true);
+                            mSelecteds.add(mediaModel);
+                            mTVcount.setText(mSelecteds.size()+"");
+                        }
                         mDatas.add(0,mediaModel);
                         mAdapter.notifyDataSetChanged();
                     }else {
@@ -650,6 +659,11 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                     }
                 }else {
                     if (!cameraComeBack){
+                        if (mSelecteds.size()<selectedCount){
+                            mediaModel.setSelected(true);
+                            mSelecteds.add(mediaModel);
+                            mTVcount.setText(mSelecteds.size()+"");
+                        }
                         mDatas.add(0,mediaModel);
                         mAdapter.notifyDataSetChanged();
                     }else {
