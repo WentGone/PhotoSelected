@@ -252,14 +252,14 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
             if ((grantResults[0] == PackageManager.PERMISSION_GRANTED) && (grantResults[1] == PackageManager.PERMISSION_GRANTED) ) {
                 getPictures();
             } else {
-                Toast.makeText(this, "已拒绝权限！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "您已拒绝权限，后续部分功能将无法使用，请在手机应用设置中打开权限", Toast.LENGTH_SHORT).show();
             }
         }
         if (requestCode == CAMERA_REQUEST_CODE) {
             if ((grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 successPermisson();
             } else {
-                Toast.makeText(this, "已拒绝权限！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "您已拒绝权限，后续部分功能将无法使用，请在手机应用设置中打开权限", Toast.LENGTH_SHORT).show();
 //                this.finish();
             }
         }
@@ -397,14 +397,15 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
 
     @Override
     public void onCameraClick() {
-        if (!useLocalCamera){
+        checkCameraPermission();
+        /*if (!useLocalCamera){
 //            Intent intent = new Intent(this, CameraVideoActivity.class);
-            Intent intent = new Intent(this, CameraActivity.class);
-            intent.putExtra(PICK_DATA,pickData);
-            startActivityForResult(intent, PickConfig.RequestCode.TAKE_PHOTO_BY_SELF);
+
+
+
         }else {
             checkCameraPermission();
-        }
+        }*/
     }
 
 
@@ -421,17 +422,25 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     }
 
     private void successPermisson() {
-        try {
-            File photoFile = PickUtils.getInstance(this).getPhotoFile(this);
-            photoFile.delete();
-            if (photoFile.createNewFile()) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, PickUtils.getInstance(this).getUri(photoFile));
-                startActivityForResult(intent, PickConfig.CAMERA_PHOTO_DATA);
+        if (!useLocalCamera){
+            Intent intent = new Intent(this, CameraActivity.class);
+            intent.putExtra(PICK_DATA,pickData);
+            startActivityForResult(intent, PickConfig.RequestCode.TAKE_PHOTO_BY_SELF);
+        }else {
+            //用手机自身的拍照
+            try {
+                File photoFile = PickUtils.getInstance(this).getPhotoFile(this);
+                photoFile.delete();
+                if (photoFile.createNewFile()) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, PickUtils.getInstance(this).getUri(photoFile));
+                    startActivityForResult(intent, PickConfig.CAMERA_PHOTO_DATA);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
     }
 
     @Override
