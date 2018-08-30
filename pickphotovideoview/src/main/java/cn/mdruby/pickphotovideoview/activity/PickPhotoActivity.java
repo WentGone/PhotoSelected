@@ -512,8 +512,8 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                 setSelected(item);
                 mTVcount.setText(mSelecteds.size()+"");
             }else {
+                Toast.makeText(this, "选择的图片不能超过"+selectedCount+"张", Toast.LENGTH_SHORT).show();
                 if (!single){
-                    Toast.makeText(this, "选择的图片不能超过"+selectedCount+"张", Toast.LENGTH_SHORT).show();
                 }
             }
         }
