@@ -314,7 +314,10 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         }
         List<String> pathsSelected = new ArrayList<>();
         counts = 0;
-        for (final MediaModel model :
+
+        aa(0);
+
+        /*for (final MediaModel model :
                 mSelecteds) {
             pathsSelected.add(TextUtils.isEmpty(model.getCropPath())?model.getPath():model.getCropPath());
             Luban.with(this)
@@ -350,10 +353,63 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                             }
                         }
                     }).launch();
+        }*/
+    }
+
+
+    int position = 0;
+    private List<MediaModel> list = new ArrayList<>();
+    private void aa(final int pos){
+        this.position = pos;
+        if (mSelecteds.size()>pos){
+            final MediaModel model = mSelecteds.get(pos);
+            Luban.with(this)
+                    .load(model.getFile())
+                    .setCompressListener(new OnCompressListener() {
+                        @Override
+                        public void onStart() {
+
+                        }
+
+                        @Override
+                        public void onSuccess(File file) {
+                            counts++;
+                            model.setFile(file);
+                            list.add(model);
+                            if (counts == mSelecteds.size()){
+                                loading.dismiss();
+                                Intent intent = getIntent();
+//                                intent.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
+                                intent.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) list);
+                                setResult(RESULT_OK,intent);
+                                PickPhotoActivity.this.finish();
+                            }else {
+                                position += 1;
+                                aa(position);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            counts++;
+                            list.add(model);
+                            if (counts == mSelecteds.size()){
+                                loading.dismiss();
+                                Intent intent = getIntent();
+//                                intent.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
+                                intent.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) list);
+                                setResult(RESULT_OK,intent);
+                                PickPhotoActivity.this.finish();
+                            }else {
+                                position += 1;
+                                aa(position);
+                            }
+                        }
+                    }).launch();
         }
     }
 
-    /**
+   /**
      * 点击列表中的某一项
      * @param position
      */

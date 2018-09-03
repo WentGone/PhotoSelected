@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 new PickPhotoView.Bulid(MainActivity.this)
                         .useLocalCamera(false)
                         .showCamera(true)
-                        .setCount(1)
+                        .setCount(3)
                         .setCameraComeBack(false)
                         .setVideoDuration(5*60)
                         .setCanZip(true)
@@ -172,7 +172,10 @@ public class MainActivity extends AppCompatActivity {
             case PickConfig.RequestCode.SELECT_PHOTO:
                 if (resultCode == RESULT_OK){
                     List<MediaModel> mediaModels = (List<MediaModel>) data.getSerializableExtra(PickConfig.KEY.MEDIA_FILE_DATA);
-                    Log.e(TAG, "onActivityResult: "+mediaModels.get(0).getFile().getAbsolutePath() );
+                    for (int i = 0; i < mediaModels.size(); i++) {
+                        Log.e(TAG, "onActivityResult: "+mediaModels.get(i).getFile().getAbsolutePath());
+                    }
+//                    Log.e(TAG, "onActivityResult: "+mediaModels.get(0).getFile().getAbsolutePath() );
                     Glide.with(this).load(mediaModels.get(0).getFile()).into(iv);
                     File file = mediaModels.get(0).getFile();
                     FileInputStream fis = null;
@@ -181,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                         fis = new FileInputStream(file);
                         long size = fis.available();
                         String formatSize = getFormatSize(size);
-                        Log.e(TAG, "onActivityResult: "+formatSize );
+//                        Log.e(TAG, "onActivityResult: "+formatSize );
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
