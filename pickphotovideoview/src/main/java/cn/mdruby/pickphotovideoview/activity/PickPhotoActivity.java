@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -16,12 +17,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -29,7 +28,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -54,16 +52,15 @@ import cn.mdruby.pickphotovideoview.adapter.RVPhotoGridAdapter;
 import cn.mdruby.pickphotovideoview.adapter.RVPhotoListAdapter;
 import cn.mdruby.pickphotovideoview.camera.AppConstant;
 import cn.mdruby.pickphotovideoview.camera.activity.CameraActivity;
-import cn.mdruby.pickphotovideoview.camera.activity.CameraVideoActivity;
 import cn.mdruby.pickphotovideoview.ui.CustomLoadingDailog;
 import cn.mdruby.pickphotovideoview.ui.DividerItemDecoration;
 import cn.mdruby.pickphotovideoview.util.PickUtils;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
-public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoClickListener{
+public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoClickListener {
     private static final String TAG = "PickPhotoActivity";
-    public static final String PICK_DATA="pick_data";
+    public static final String PICK_DATA = "pick_data";
     private static final int CAMERA_REQUEST_CODE = 0x67;
     private PickData pickData;
     private RecyclerView mRV;
@@ -81,11 +78,11 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     private boolean showCamera = false;
     private boolean useLocalCamera = false;
     private int selectedCount = 3;
-    private TextView mTVselected,mTVcount;
+    private TextView mTVselected, mTVcount;
     private GroupMedia groupImage;
     private DirImage dirImage;
     private List<String> dirImageStrings;
-    private HashMap<String,List<MediaModel>> groupImages;
+    private HashMap<String, List<MediaModel>> groupImages;
     private LinearLayout mLLayoutContent;
     private int bottomBarViewRes = 0;
     private boolean showCheckedIcon = true;
@@ -125,21 +122,21 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        mRV.setLayoutManager(new GridLayoutManager(this,4,GridLayoutManager.VERTICAL,false));
+        mRV.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
         mRVList.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new RVPhotoGridAdapter(this,mDatas,showCamera);
+        mAdapter = new RVPhotoGridAdapter(this, mDatas, showCamera);
         mAdapter.setShowCheckIcon(showCheckedIcon);
         mRV.setAdapter(mAdapter);
 
         groupImage = PickPreferences.getInstance(this).getListImage();
         dirImage = PickPreferences.getInstance(this).getDirImage();
 
-        if (groupImage != null && dirImage != null){
+        if (groupImage != null && dirImage != null) {
             groupImages = groupImage.getGroupMedias();
             dirImageStrings = dirImage.dirName;
         }
-        mListAdapter = new RVPhotoListAdapter(this,groupImages,dirImageStrings);
-        mRVList.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.HORIZONTAL_LIST,15, Color.TRANSPARENT));
+        mListAdapter = new RVPhotoListAdapter(this, groupImages, dirImageStrings);
+        mRVList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL_LIST, 15, Color.TRANSPARENT));
         mRVList.setAdapter(mListAdapter);
 
         mAdapter.setOnItemPhotoClickListener(this);
@@ -185,15 +182,15 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         single = pickData.isSingle();
         cameraComeBack = pickData.isCameraComeBack();
         //如果设置一张图片  那么为单选
-        if (selectedCount == 1){
+        if (selectedCount == 1) {
             single = true;
         }
     }
 
     private void initBottomBar() {
         int childCount = mLLayoutContent.getChildCount();
-        View view = LayoutInflater.from(this).inflate((childCount<2 && bottomBarViewRes>0)?bottomBarViewRes:R.layout.pick_photo_bottom_bar,mLLayoutContent,false);
-        if (showBottomBar){
+        View view = LayoutInflater.from(this).inflate((childCount < 2 && bottomBarViewRes > 0) ? bottomBarViewRes : R.layout.pick_photo_bottom_bar, mLLayoutContent, false);
+        if (showBottomBar) {
             mLLayoutContent.addView(view);
         }
         mTVselected = (TextView) view.findViewById(R.id.act_pick_TV_bottom_selected);
@@ -205,7 +202,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         groupImages = new HashMap<>();
     }
 
-    private class OnDragScrollListener extends ActionBarDrawerToggle{
+    private class OnDragScrollListener extends ActionBarDrawerToggle {
 
         public OnDragScrollListener(Activity activity, DrawerLayout drawerLayout, @StringRes int openDrawerContentDescRes, @StringRes int closeDrawerContentDescRes) {
             super(activity, drawerLayout, openDrawerContentDescRes, closeDrawerContentDescRes);
@@ -217,7 +214,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
 
         @Override
         public void onDrawerOpened(View drawerView) {
-            if (groupImages.size()==0 && dirImageStrings.size()==0){
+            if (groupImages.size() == 0 && dirImageStrings.size() == 0) {
                 groupImage = PickPreferences.getInstance(PickPhotoActivity.this).getListImage();
                 dirImage = PickPreferences.getInstance(PickPhotoActivity.this).getDirImage();
                 groupImages.putAll(groupImage.getGroupMedias());
@@ -234,14 +231,14 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
                 (ContextCompat.checkSelfPermission(this,
                         Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                ) {
+        ) {
             getPictures();
 
             //判断是否开启语音权限
         } else {
             //请求获取摄像头权限
             ActivityCompat.requestPermissions((Activity) this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},PickConfig.RequestCode.GET_EXTERNAL_STORAGE_REQUEST_CODE);
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PickConfig.RequestCode.GET_EXTERNAL_STORAGE_REQUEST_CODE);
         }
     }
 
@@ -249,7 +246,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PickConfig.RequestCode.GET_EXTERNAL_STORAGE_REQUEST_CODE) {
-            if ((grantResults[0] == PackageManager.PERMISSION_GRANTED) && (grantResults[1] == PackageManager.PERMISSION_GRANTED) ) {
+            if ((grantResults[0] == PackageManager.PERMISSION_GRANTED) && (grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
                 getPictures();
             } else {
                 Toast.makeText(this, "您已拒绝权限，后续部分功能将无法使用，请在手机应用设置中打开权限", Toast.LENGTH_SHORT).show();
@@ -266,23 +263,23 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     }
 
     private void callback() {
-        if (mSelecteds.size()>0){
-            if (canCrop && mSelecteds.size()==1){
+        if (mSelecteds.size() > 0) {
+            if (canCrop && mSelecteds.size() == 1) {
                 crop();
-            }else {
-                if (canZip){
-                    if (!loading.isShowing()){
+            } else {
+                if (canZip) {
+                    if (!loading.isShowing()) {
                         loading.show();
                     }
                     zip();
-                }else {
+                } else {
                     Intent intent = getIntent();
                     intent.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
-                    setResult(RESULT_OK,intent);
+                    setResult(RESULT_OK, intent);
                     PickPhotoActivity.this.finish();
                 }
             }
-        }else {
+        } else {
             Toast.makeText(this, "请选择一张图片", Toast.LENGTH_SHORT).show();
         }
     }
@@ -290,17 +287,17 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     /**
      * 裁剪
      */
-    private void crop(){
+    private void crop() {
         MediaModel mediaModel = mSelecteds.get(0);
-        if (mediaModel.getFile() == null){
+        if (mediaModel.getFile() == null) {
             mediaModel.setFile(new File(mediaModel.getPath()));
         }
-        File file = new File(Environment.getExternalStorageDirectory(),System.currentTimeMillis()+".jpg");
+        File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
         outputUri = Uri.fromFile(file);
         cropPath = outputUri.getPath();
-        Intent intent = new Intent(this,PickCropActivity.class);
-        intent.putExtra(PickConfig.KEY.MEDIA_DATA_ONE,mediaModel);
-        startActivityForResult(intent,PickConfig.RequestCode.CROP_IMAGE);
+        Intent intent = new Intent(this, PickCropActivity.class);
+        intent.putExtra(PickConfig.KEY.MEDIA_DATA_ONE, mediaModel);
+        startActivityForResult(intent, PickConfig.RequestCode.CROP_IMAGE);
     }
 
     private int counts = 0;
@@ -308,8 +305,8 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     /**
      * 压缩
      */
-    private void zip(){
-        if (loading.isShowing()){
+    private void zip() {
+        if (loading.isShowing()) {
             loading.show();
         }
         List<String> pathsSelected = new ArrayList<>();
@@ -359,9 +356,10 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
 
     int position = 0;
     private List<MediaModel> list = new ArrayList<>();
-    private void aa(final int pos){
+
+    private void aa(final int pos) {
         this.position = pos;
-        if (mSelecteds.size()>pos){
+        if (mSelecteds.size() > pos) {
             final MediaModel model = mSelecteds.get(pos);
             Luban.with(this)
                     .load(model.getFile())
@@ -376,14 +374,14 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                             counts++;
                             model.setFile(file);
                             list.add(model);
-                            if (counts == mSelecteds.size()){
+                            if (counts == mSelecteds.size()) {
                                 loading.dismiss();
                                 Intent intent = getIntent();
 //                                intent.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
                                 intent.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) list);
-                                setResult(RESULT_OK,intent);
+                                setResult(RESULT_OK, intent);
                                 PickPhotoActivity.this.finish();
-                            }else {
+                            } else {
                                 position += 1;
                                 aa(position);
                             }
@@ -393,14 +391,14 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                         public void onError(Throwable e) {
                             counts++;
                             list.add(model);
-                            if (counts == mSelecteds.size()){
+                            if (counts == mSelecteds.size()) {
                                 loading.dismiss();
                                 Intent intent = getIntent();
 //                                intent.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
                                 intent.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) list);
-                                setResult(RESULT_OK,intent);
+                                setResult(RESULT_OK, intent);
                                 PickPhotoActivity.this.finish();
-                            }else {
+                            } else {
                                 position += 1;
                                 aa(position);
                             }
@@ -409,13 +407,14 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         }
     }
 
-   /**
+    /**
      * 点击列表中的某一项
+     *
      * @param position
      */
     private void clickListItem(int position) {
         List<MediaModel> item = mListAdapter.getItem(position);
-        if (mTVcount != null){
+        if (mTVcount != null) {
             mTVcount.setText("");
         }
         mSelecteds.clear();
@@ -423,11 +422,13 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
         mDatas.clear();
         mDatas.addAll(item);
         mDrawerLayout.closeDrawers();
-        mAdapter.setShowCamera(mListAdapter.getDirName(position).equals(PickConfig.ALL_PHOTOS)?showCamera:false);
+
+        showCamera = mListAdapter.getDirName(position).equals(PickConfig.ALL_PHOTOS);
+        mAdapter.setShowCamera(showCamera);
         mAdapter.notifyDataSetChanged();
     }
 
-//    public static final String ALL_PHOTOS = "All Photos";
+    //    public static final String ALL_PHOTOS = "All Photos";
     public static final String ALL_PHOTOS = "所有图片";
 //    public static final String ALL_PHOTOS = App.getContext().getString(R.string.pick_all_photo);
 
@@ -435,18 +436,18 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
      * 获取所有的照片
      */
     private void getPictures() {
-      PickPhotoHelper vhlepr = new PickPhotoHelper(this, new PickPhotoListener() {
-          @Override
-          public void pickSuccess() {
-              mDatas.clear();
-              List<MediaModel> mediaModels = PickPreferences.getInstance(PickPhotoActivity.this).getListImage().getGroupMedias().get(ALL_PHOTOS);
-              if (mediaModels == null){
-                  mediaModels = new ArrayList<>();
-              }
-              mDatas.addAll(mediaModels);
-              mAdapter.notifyDataSetChanged();
-          }
-      });
+        PickPhotoHelper vhlepr = new PickPhotoHelper(this, new PickPhotoListener() {
+            @Override
+            public void pickSuccess() {
+                mDatas.clear();
+                List<MediaModel> mediaModels = PickPreferences.getInstance(PickPhotoActivity.this).getListImage().getGroupMedias().get(ALL_PHOTOS);
+                if (mediaModels == null) {
+                    mediaModels = new ArrayList<>();
+                }
+                mDatas.addAll(mediaModels);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
         vhlepr.getImages(true);
         vhlepr.setShowVideo(showVideo);
     }
@@ -467,7 +468,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
 
     private void checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)  {
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             //判断是否开启权限
             successPermisson();
         } else {
@@ -478,11 +479,11 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     }
 
     private void successPermisson() {
-        if (!useLocalCamera){
+        if (!useLocalCamera) {
             Intent intent = new Intent(this, CameraActivity.class);
-            intent.putExtra(PICK_DATA,pickData);
+            intent.putExtra(PICK_DATA, pickData);
             startActivityForResult(intent, PickConfig.RequestCode.TAKE_PHOTO_BY_SELF);
-        }else {
+        } else {
             //用手机自身的拍照
             try {
                 File photoFile = PickUtils.getInstance(this).getPhotoFile(this);
@@ -501,45 +502,45 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
 
     @Override
     public void onPhotoClick(int position) {
-        Intent intent = new Intent(this,PickPhotoPreviewActivity.class);
+        Intent intent = new Intent(this, PickPhotoPreviewActivity.class);
         MediaModel mediaModel = mDatas.get(position);
-        if (mDatas.size()>=photoSize){
-            int startPos = (position-photoSize/2)<0?0:(position-photoSize/2);
-            int endPos = ((mDatas.size()-position)>=photoSize)?(position+photoSize/2):mDatas.size();
+        if (mDatas.size() >= photoSize) {
+            int startPos = (position - photoSize / 2) < 0 ? 0 : (position - photoSize / 2);
+            int endPos = ((mDatas.size() - position) >= photoSize) ? (position + photoSize / 2) : mDatas.size();
 
 //            List<MediaModel> mediaModels = new ArrayList<MediaModel>(mDatas.subList((position - photoSize/2) < 0 ? 0 : (position - photoSize/2), mDatas.size() - position > photoSize/2 ? photoSize/2+position : (mDatas.size() - photoSize/2)));
             List<MediaModel> mediaModels = new ArrayList<MediaModel>(mDatas.subList(startPos, endPos));
             List<MediaModel> a = new ArrayList<>();
             for (int i = 0; i < mediaModels.size(); i++) {
                 MediaModel mediaModel1 = mediaModels.get(i);
-                if (!mediaModel1.getMimeType().contains("video")){
+                if (!mediaModel1.getMimeType().contains("video")) {
                     a.add(mediaModel1);
                 }
             }
             intent.putExtra(PickPhotoPreviewActivity.MEDIA_DATAS, (Serializable) a);
             int po = 0;
             for (int i = 0; i < a.size(); i++) {
-                if (a.get(i).getPath().equals(mediaModel.getPath())){
+                if (a.get(i).getPath().equals(mediaModel.getPath())) {
                     po = i;
                     break;
                 }
             }
-            intent.putExtra(PickPhotoPreviewActivity.POSITION_COUNT,po);
-        }else {
+            intent.putExtra(PickPhotoPreviewActivity.POSITION_COUNT, po);
+        } else {
             List<MediaModel> a = new ArrayList<>();
             for (int i = 0; i < mDatas.size(); i++) {
                 MediaModel mediaModel1 = mDatas.get(i);
-                if (!mediaModel1.getMimeType().contains("video")){
+                if (!mediaModel1.getMimeType().contains("video")) {
                     a.add(mediaModel1);
                 }
             }
             intent.putExtra(PickPhotoPreviewActivity.MEDIA_DATAS, (Serializable) a);
-            intent.putExtra(PickPhotoPreviewActivity.POSITION_COUNT,position);
+            intent.putExtra(PickPhotoPreviewActivity.POSITION_COUNT, position);
         }
-        intent.putExtra(PickConfig.KEY.MEDIA_COUNT,selectedCount);
-        intent.putExtra(PickConfig.KEY.MEDIA_NOW_COUNT,mSelecteds.size());
-        intent.putExtra(PickConfig.KEY.PICK_DATA_INTENT,pickData);
-        startActivityForResult(intent,PickConfig.RequestCode.PRE_PHOTO_CODE);
+        intent.putExtra(PickConfig.KEY.MEDIA_COUNT, selectedCount);
+        intent.putExtra(PickConfig.KEY.MEDIA_NOW_COUNT, mSelecteds.size());
+        intent.putExtra(PickConfig.KEY.PICK_DATA_INTENT, pickData);
+        startActivityForResult(intent, PickConfig.RequestCode.PRE_PHOTO_CODE);
 
 //        String path = mediaModel.getPath();
 
@@ -548,40 +549,40 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
     @Override
     public void onVideoClick(int position) {
         MediaModel mediaModel = mDatas.get(position);
-        Intent intent = new Intent(this,PickVideoPreviewActivity.class);
-        intent.putExtra(PickVideoPreviewActivity.MEDIA_BEAN,mediaModel);
+        Intent intent = new Intent(this, PickVideoPreviewActivity.class);
+        intent.putExtra(PickVideoPreviewActivity.MEDIA_BEAN, mediaModel);
         startActivity(intent);
     }
 
     @Override
     public void onSelectClick(int position) {
         MediaModel item = mAdapter.getItem(position);
-        if (mSelecteds.contains(item)){
+        if (mSelecteds.contains(item)) {
             item.setSelected(!item.isSelected());
-            mAdapter.notifyItemChanged(showCamera?(position+1):position);
+            mAdapter.notifyItemChanged(showCamera ? (position + 1) : position);
             setSelected(item);
-            mTVcount.setText(mSelecteds.size()+"");
-        }else {
-            if (mSelecteds.size()<selectedCount){
+            mTVcount.setText(mSelecteds.size() + "");
+        } else {
+            if (mSelecteds.size() < selectedCount) {
                 item.setSelected(!item.isSelected());
-                mAdapter.notifyItemChanged(showCamera?(position+1):position);
+                mAdapter.notifyItemChanged(showCamera ? (position + 1) : position);
                 setSelected(item);
-                mTVcount.setText(mSelecteds.size()+"");
-            }else {
-                Toast.makeText(this, "选择的图片不能超过"+selectedCount+"张", Toast.LENGTH_SHORT).show();
-                if (!single){
+                mTVcount.setText(mSelecteds.size() + "");
+            } else {
+                Toast.makeText(this, "选择的图片不能超过" + selectedCount + "张", Toast.LENGTH_SHORT).show();
+                if (!single) {
                 }
             }
         }
     }
 
     private void setSelected(MediaModel item) {
-        if (item.isSelected()){
-            if (!mSelecteds.contains(item)){
+        if (item.isSelected()) {
+            if (!mSelecteds.contains(item)) {
                 mSelecteds.add(item);
             }
-        }else {
-            if (mSelecteds.contains(item)){
+        } else {
+            if (mSelecteds.contains(item)) {
                 mSelecteds.remove(item);
             }
         }
@@ -589,16 +590,16 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
             case PickConfig.RequestCode.TAKE_PHOTO_BY_SELF:
-                if (resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     String imagePath = data.getStringExtra(AppConstant.KEY.IMG_PATH);
                     MediaModel mediaModel = new MediaModel();
                     mediaModel.setFile(new File(imagePath));
                     mediaModel.setPath(imagePath);
                     mediaModel.setThumPath(imagePath);
-                    mediaModel.setMimeType(imagePath.endsWith(".mp4")?"video":"image");
-                    if (imagePath.endsWith(".mp4")){
+                    mediaModel.setMimeType(imagePath.endsWith(".mp4") ? "video" : "image");
+                    if (imagePath.endsWith(".mp4")) {
                         MediaPlayer mediaPlayer = new MediaPlayer();
                         try {
                             mediaPlayer.setDataSource(imagePath);
@@ -615,28 +616,28 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                             e.printStackTrace();
                         }
                     }
-                    if (!cameraComeBack){
-                        if (mSelecteds.size()<selectedCount){
+                    if (!cameraComeBack) {
+                        if (mSelecteds.size() < selectedCount) {
                             mediaModel.setSelected(true);
                             mSelecteds.add(mediaModel);
-                            mTVcount.setText(mSelecteds.size()+"");
+                            mTVcount.setText(mSelecteds.size() + "");
                         }
-                        mDatas.add(0,mediaModel);
+                        mDatas.add(0, mediaModel);
                         mAdapter.notifyDataSetChanged();
-                    }else {
+                    } else {
                         //回调
                         mSelecteds.add(mediaModel);
                         callback();
                     }
-                }else if (resultCode == 101){
+                } else if (resultCode == 101) {
                     String path = data.getStringExtra("path");
-                    Log.e(TAG, "onActivityResult: "+path);
+                    Log.e(TAG, "onActivityResult: " + path);
                     MediaModel mediaModel = new MediaModel();
                     mediaModel.setFile(new File(path));
                     mediaModel.setPath(path);
                     mediaModel.setThumPath(path);
-                    mediaModel.setMimeType(path.endsWith(".mp4")?"video":"image");
-                    if (path.endsWith(".mp4")){
+                    mediaModel.setMimeType(path.endsWith(".mp4") ? "video" : "image");
+                    if (path.endsWith(".mp4")) {
                         MediaPlayer mediaPlayer = new MediaPlayer();
                         try {
                             mediaPlayer.setDataSource(path);
@@ -653,21 +654,21 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                             e.printStackTrace();
                         }
                     }
-                    if (!cameraComeBack){
-                        if (mSelecteds.size()<selectedCount){
+                    if (!cameraComeBack) {
+                        if (mSelecteds.size() < selectedCount) {
                             mediaModel.setSelected(true);
                             mSelecteds.add(mediaModel);
-                            mTVcount.setText(mSelecteds.size()+"");
+                            mTVcount.setText(mSelecteds.size() + "");
                         }
-                        mDatas.add(0,mediaModel);
+                        mDatas.add(0, mediaModel);
                         mAdapter.notifyDataSetChanged();
-                    }else {
+                    } else {
                         //回调
                         mSelecteds.add(mediaModel);
 //                        callback();
                         Intent intentReturn = getIntent();
                         intentReturn.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
-                        setResult(RESULT_OK,intentReturn);
+                        setResult(RESULT_OK, intentReturn);
                         PickPhotoActivity.this.finish();
                     }
                 }
@@ -676,7 +677,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                 List<MediaModel> pres = (List<MediaModel>) data.getSerializableExtra(PickConfig.KEY.PRE_PHOTO_FILE);
                 for (int i = 0; i < mDatas.size(); i++) {
                     for (int j = 0; j < pres.size(); j++) {
-                        if (mDatas.get(i).compareTo(pres.get(j)) == 0){
+                        if (mDatas.get(i).compareTo(pres.get(j)) == 0) {
                             mDatas.get(i).setSelected(pres.get(j).isSelected());
                         }
                     }
@@ -686,7 +687,7 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                 for (int i = 0; i < mDatas.size(); i++) {
                     setSelected(mDatas.get(i));
                 }
-                mTVcount.setText(mSelecteds.size()+"");
+                mTVcount.setText(mSelecteds.size() + "");
                 break;
             case PickConfig.CAMERA_PHOTO_DATA:
                 String path;
@@ -709,29 +710,29 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                 mediaModel.setPath(path);
                 mediaModel.setFile(new File(path));
 //                mediaModels.add(mediaModel);
-                if (cameraComeBack){
+                if (cameraComeBack) {
                     mSelecteds.add(mediaModel);
-                    if (canZip){
-                        if (!loading.isShowing()){
+                    if (canZip) {
+                        if (!loading.isShowing()) {
                             loading.show();
                         }
                         zip();
-                    }else {
+                    } else {
                         Intent intentReturn = getIntent();
                         intentReturn.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
-                        setResult(RESULT_OK,intentReturn);
+                        setResult(RESULT_OK, intentReturn);
                         PickPhotoActivity.this.finish();
                     }
-                }else {
-                    if (!cameraComeBack){
-                        if (mSelecteds.size()<selectedCount){
+                } else {
+                    if (!cameraComeBack) {
+                        if (mSelecteds.size() < selectedCount) {
                             mediaModel.setSelected(true);
                             mSelecteds.add(mediaModel);
-                            mTVcount.setText(mSelecteds.size()+"");
+                            mTVcount.setText(mSelecteds.size() + "");
                         }
-                        mDatas.add(0,mediaModel);
+                        mDatas.add(0, mediaModel);
                         mAdapter.notifyDataSetChanged();
-                    }else {
+                    } else {
                         //回调
                         mSelecteds.add(mediaModel);
                         callback();
@@ -742,19 +743,19 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
                 break;
 
             case PickConfig.RequestCode.CROP_IMAGE:
-                if (resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     cropPath = data.getStringExtra(PickConfig.KEY.CROP_IMAGE_FILE_PATH);
                     mSelecteds.get(0).setCropPath(cropPath);
                     mSelecteds.get(0).setFile(new File(cropPath));
-                    if (canZip){
-                         if (!loading.isShowing()){
+                    if (canZip) {
+                        if (!loading.isShowing()) {
                             loading.show();
-                         }
+                        }
                         zip();
-                    }else {
+                    } else {
                         Intent intentReturn = getIntent();
                         intentReturn.putExtra(PickConfig.KEY.MEDIA_FILE_DATA, (Serializable) mSelecteds);
-                        setResult(RESULT_OK,intentReturn);
+                        setResult(RESULT_OK, intentReturn);
                         PickPhotoActivity.this.finish();
                     }
                 }
