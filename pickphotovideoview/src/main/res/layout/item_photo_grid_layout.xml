@@ -15,5 +15,5 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/pick_ic_un_select"
         android:layout_alignParentRight="true"
-        android:layout_margin="5dp"/>
+        android:padding="8dp"/>
 </RelativeLayout>
