@@ -513,7 +513,9 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
             List<MediaModel> a = new ArrayList<>();
             for (int i = 0; i < mediaModels.size(); i++) {
                 MediaModel mediaModel1 = mediaModels.get(i);
-                if (!mediaModel1.getMimeType().contains("video")) {
+                if (showVideo && mediaModel1.getMimeType().contains("video")) {
+                    a.add(mediaModel1);
+                } else {
                     a.add(mediaModel1);
                 }
             }
@@ -530,7 +532,9 @@ public class PickPhotoActivity extends AppCompatActivity implements OnItemPhotoC
             List<MediaModel> a = new ArrayList<>();
             for (int i = 0; i < mDatas.size(); i++) {
                 MediaModel mediaModel1 = mDatas.get(i);
-                if (!mediaModel1.getMimeType().contains("video")) {
+                if (showVideo && mediaModel1.getMimeType().contains("video")) {
+                    a.add(mediaModel1);
+                } else {
                     a.add(mediaModel1);
                 }
             }
